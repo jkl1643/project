@@ -2,6 +2,7 @@ package com.example;
 
 //import com.sun.org.apache.xpath.internal.operations.Mod;
 
+import com.sun.deploy.net.HttpResponse;
 import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -10,15 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sun.applet.Main;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.io.PrintWriter;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -31,6 +31,7 @@ public class MainController {
     public static String userNickname = null;
     public static int state = 1;
     public static Hashtable loginUsers = new Hashtable();
+    public static MainServer server;
     private static PythonInterpreter interpreter;
 
     @Autowired
@@ -130,19 +131,25 @@ public class MainController {
     }
 
     @RequestMapping("/home")
-    public ModelAndView login(ModelAndView mav, HttpSession session, Model model,
+    public ModelAndView login(ModelAndView mav, HttpSession session, Model model, HttpServletResponse response,
                               @RequestParam(value = "EMAIL2", required = false, defaultValue = "0") String id,
                               @RequestParam(value = "PWD2", required = false) String pwd,
                               @RequestParam(value = "PWD22", required = false) String pwd2,
-                              @RequestParam(value = "NICKNAME2", required = false) String nickname) {
+                              @RequestParam(value = "NICKNAME2", required = false) String nickname) throws IOException {
         System.out.println("--------홈------------");
         mav.addObject("users", loginUsers.size());
         try {
-            Member name = (Member)session.getAttribute("mem");
+            Member mem = (Member)session.getAttribute("mem");
+            if(mem != null){
+                mav.setViewName("main");
+                return mav;
+            }
             login = 0;
         } catch (Exception e) {
             login = 1;
         }
+
+
         mav.addObject("unknown_email", false);
         mav.addObject("email_pwd_match", false);
         mav.addObject("email_pwd_match2", false);
@@ -225,8 +232,11 @@ public class MainController {
     }
 
     @RequestMapping("/main")
-    public ModelAndView main(Model model, String id, HttpServletResponse response, String saveId,
-             String oldpwd, String pwd, String pwd2, String nickname, HttpSession session) {
+    public ModelAndView main(Model model,
+                             @RequestParam(value = "loginId", required = false) String id,
+                             @RequestParam(value = "loginPw", required = false) String pwd,
+                             HttpServletResponse response, String saveId,
+             String oldpwd, String pwd2, String nickname, HttpSession session) {
         System.out.println("-------------메인 ----------------");
         ModelAndView mav = new ModelAndView();
         mav.addObject("unknown_email", false);
@@ -263,7 +273,7 @@ public class MainController {
                         loginUsers.put(id, id);
                         session.setAttribute("mem", member);
                     } catch (Exception e){
-
+                        System.out.println("에러");
                     }
                 }
             }
@@ -304,7 +314,7 @@ public class MainController {
                 lgn.login(id, pwd); //로그인
                 loginUsers.put(id, id);
                 session.setAttribute("mem", member);
-                session.setMaxInactiveInterval(10);
+                //session.setMaxInactiveInterval(10);
                 mav.addObject("login", 1);
                 System.out.println("id = " + id + ", pwd = " + pwd);
                 userid2 = MemberLogin.loginEmail;
@@ -315,7 +325,7 @@ public class MainController {
                     Cookie cookie = new Cookie("saveId", id);
                     response.addCookie(cookie);
                 }
-                mav.setViewName("home");
+                mav.setViewName("main");
             } catch (MemberNotFoundException e) {
                 System.out.println("존재하지 않는 이메일입니다.2\n");
                 mav.addObject("unknown_email", true);
@@ -334,9 +344,9 @@ public class MainController {
                 mav.setViewName("home");
             }
         } else {
-            mav.setViewName("home");
+            mav.setViewName("main");
         }
-        mav.setViewName("home");
+        //mav.setViewName("home");
         return mav;
     }
 
@@ -444,13 +454,162 @@ public class MainController {
     }
 
     @RequestMapping("/createroom")
-    public ModelAndView createroom(Model model, HttpSession session, String name, String pw) {
+    public ModelAndView createroom(Model model, HttpSession session, HttpServletResponse response, String name, String pw) throws IOException {
         ModelAndView mav = new ModelAndView();
-        MainServer server = serverList.get(1);
-        Room room = server.create();
-        model.addAttribute("roomId", room.getID());
-        model.addAttribute("roomPw", room.getPassword());
-        mav.setViewName("createroom");
+        System.out.println("------------createroom------------");
+        Member mem = (Member) session.getAttribute("mem");
+
+        /*serverList.put(mem.getId().intValue(), new MainServer());*/
+        //serverList.put(1, new MainServer());
+
+        /*MainServer server = serverList.get(mem.getId().intValue());*/
+        //MainServer server = serverList.get(1);
+        Room room2 = (Room) session.getAttribute("room");
+        if((Member)session.getAttribute("mem") == null) {
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('로그인이 필요합니다.'); location.href='home';</script>");
+            out.flush();
+            return mav;
+        }
+        if(room2 == null){ //여기 세션에서 방이 만들어지지않았을때
+            //serverList.put(1, new MainServer());
+            serverList.put(mem.getId().intValue(), new MainServer());
+            System.out.println("서버리스트밸류 : " + serverList.values());
+            MainServer server = serverList.get(mem.getId().intValue());
+            Room room = server.create();
+
+            model.addAttribute("roomId", room.getID());
+            model.addAttribute("roomPw", room.getPassword());
+            session.setAttribute("room", room);
+            System.out.println("만든사람1 방번호 : " + room.getID() + ", 비밀번호 : " + room.getPassword() + ", 서버 : " + serverList.get(mem.getId().intValue()));
+            model.addAttribute("User_list", server.getUser_nick().keySet());
+            Set<String> keys2 = server.getUser_nick().keySet();
+            for (String key : keys2) {
+                System.out.println("유저44 : " + key);
+            }
+            System.out.println("id1 : " + room.getID() + ", pw1 : " + room.getPassword());
+            return joinroom(model, session, response, mem.getNickname(), room.getID(), room.getPassword());
+        } else {
+
+        }
+
+        //이 세션에서 방이 만들어진적있을때
+        System.out.println("return");
+        System.out.println("id11 : " + room2.getID() + ", pw11 : " + room2.getPassword());
+        return joinroom(model, session, response, mem.getNickname(), room2.getID(), room2.getPassword());
+    }
+
+    @RequestMapping("/joinroom")
+    public ModelAndView joinroom(Model model, HttpSession session, HttpServletResponse response, String name,
+                                 @RequestParam(value = "roomId", required = false) String ID,
+                                 @RequestParam(value = "roomPw", required = false) String PW) throws IOException {
+        ModelAndView mav = new ModelAndView();
+        System.out.println("-----------joinroom---------");
+        Member mem = (Member) session.getAttribute("mem");
+        Room room = (Room) session.getAttribute("room");
+        if((Member)session.getAttribute("mem") == null) {
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('로그인이 필요합니다.'); location.href='home';</script>");
+            out.flush();
+            return mav;
+        }
+
+        try {
+            for (Integer key : serverList.keySet()) {
+                server = serverList.get(key);
+                System.out.println("리스트 : " + key + String.valueOf(key));
+                System.out.println("리스트2 : " + server.getRoom_list());
+                //key랑 비교해야지
+                System.out.println("server.getRoom_list().get(key.toString()).getID() : " + server.getRoom_list().get(ID).getID() + ", ID : " + ID);
+                if (server.getRoom_list().get(ID).getID().equals(ID)) {
+                    break;
+                } else {
+                }
+            }
+        } catch (Exception e){
+
+        }
+        server = serverList.get(16);
+        //MainServer server =
+        //MainServer server = serverList.get(mem.getId().intValue()); //서버번호를 서버 고유아이디로해야할듯
+        //MainServer server = serverList.get(mem.getId().intValue());
+        if(room == null) { //이 세션에서 방만들어진적없을때 방입장으로 들어갔을때
+            System.out.println("아이디 : " + server.getRoom_list().get(ID));
+            if (ID.equals(server.getRoom_list().get(ID).getID())) {
+                System.out.println("방번호같음 : ");
+                session.setAttribute("roomid", ID);
+                session.setAttribute("roompw", PW);
+                if(name == null) {
+                    name = mem.getNickname();
+                }
+                server.select(ID, PW, name);
+                model.addAttribute("User_list", server.getUser_nick().keySet());
+                System.out.println("id2 : " + ID + ", pw2 : " + PW);
+                mav.setViewName("createroom");
+                return mav;
+            }
+        } else { //방생성으로 들어갔을때
+            session.setAttribute("roomid", ID);
+            session.setAttribute("roompw", PW);
+            server.select(room.getID(), room.getPassword(), mem.getNickname());
+            model.addAttribute("User_list", server.getUser_nick().keySet());
+            mav.setViewName("createroom");
+            System.out.println("id3 : " + room.getID() + ", pw3 : " + room.getPassword());
+            return mav;
+        }
+        System.out.println("ID : " + ID + ", PW : " + PW);
+
+        /*if(name == null)
+            name = mem.getNickname();
+        server.select(ID, PW, name); //방생성한 번호 비번으로 만들기랑 방번호 방비번 입력해서 하는걸로 조건
+
+        System.out.println("만든사람2 방번호 : " + ID + ", 비밀번호 : " + PW + ", name : " + name);
+        model.addAttribute("User_list", server.getUser_nick().keySet());
+        System.out.println("유저ㅓㅓ");
+        Set<String> keys2 = server.getUser_nick().keySet();
+        for (String key : keys2) {
+            System.out.println("유저444 : " + key);
+        }
+        mav.setViewName("createroom");*/
         return mav;
     }
+    @GetMapping("/refreshuserlist")
+    public ModelAndView RefreshUserlist(Model model, HttpSession session) {
+        ModelAndView mav = new ModelAndView();
+        Member mem = (Member) session.getAttribute("mem");
+        Room room = (Room) session.getAttribute("room");
+        //String roomid = (String)
+        //MainServer Server = serverList.get(mem.getId().intValue());
+        MainServer Server = serverList.get(16);
+        /*try {
+            for (Integer key : serverList.keySet()) {
+                server = serverList.get(key);
+                System.out.println("리스트 : " + key + String.valueOf(key));
+                System.out.println("리스트2 : " + server.getRoom_list());
+                //key랑 비교해야지
+                System.out.println("server.getRoom_list().get(key.toString()).getID() : " + server.getRoom_list().get(room.getID()).getID() + ", ID : " + room.getID());
+                if (server.getRoom_list().get(room.getID()).getID().equals(room.getID())) {
+                    break;
+                } else {
+                }
+            }
+        } catch (Exception e){
+
+        }*/
+
+        model.addAttribute("User_list", Server.getUser_nick().keySet());
+        mav.setViewName("Game_userlist"); // room 만든후 .
+        return mav;
+    }
+
+    @GetMapping("/cam")
+    public ModelAndView cam(Model model){
+        ModelAndView mav = new ModelAndView();
+
+        mav.setViewName("cam");
+        return mav;
+    }
+
 }

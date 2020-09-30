@@ -22,6 +22,7 @@ public class MainServer {
     }
 
     public void connectuser(String nick, WebSocketSession user, String roomid) {
+        System.out.println("connectuser");
         if (User_nick.get(nick) != null) {
             User_list.remove(User_nick.get(nick));
             User_nick.remove(nick);
@@ -94,4 +95,20 @@ public class MainServer {
         System.out.println("방 생성");
         return room;
     }
+
+    public void select(String roomID, String pw, String nick) {
+        for(Room room : Room_list.values()) {
+            if(room.getID().equals(roomID)) {
+                room.join(nick, pw);
+                System.out.println("방 입장 : " + nick + " / " + room.getName());
+            }
+        }
+    }
+
+    public HashMap<String, Room> getRoom_list() { return Room_list; }
+    public void setRoom_list(HashMap<String, Room> Room_list) { this.Room_list = Room_list; }
+    public HashMap<String, User> getUser_list() { return User_list; }
+    public void setUser_list(HashMap<String, User> user_list) { User_list = user_list; }
+    public HashMap<String, String> getUser_nick() { return User_nick; }
+    public void setUser_nick(HashMap<String, String> user_nick) { User_nick = user_nick; }
 }

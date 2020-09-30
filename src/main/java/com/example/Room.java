@@ -17,7 +17,6 @@ public class Room {
         this.ID = UUID.randomUUID().toString();
         this.name = name;
         this.usernicks = new HashSet<>();
-
         this.password = srand.substring(srand.length() - 11, srand.length() - 1);
     }
 

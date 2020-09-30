@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>보드게임</title>
+<title></title>
 </head>
 
 <style>
@@ -77,7 +77,7 @@
 	.login .inp_text {
 		position: relative;
 		width: 100%;
-		margin: 0;
+		margin: 10px;
 		padding: 18px 19px 19px;
 		box-sizing: border-box;
 	}
@@ -148,22 +148,81 @@
 		float: right;
 		color: #777;
 	}
+
+	/*모달*/
+	.modal {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+
+	/* Modal Content/Box */
+	.modal-content {
+		background-color: #fefefe;
+		margin: 15% auto; /* 15% from the top and centered */
+		padding: 20px;
+		border: 1px solid #888;
+		width: 25%; /* Could be more or less, depending on screen size */
+		height: 30%;
+	}
+	/* The Close Button */
+	.close {
+		color: #aaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+	.close:hover,
+	.close:focus {
+		color: black;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+
 </style>
 
 <body>
-<table>
-	<tr>
-		<td>
-			asdf
-		</td>
-	</tr>
-</table>
-<button type="button" OnClick="location.href ='createroom'">aaaaaaaaaaaaaaaaaa</button>
+<button type="button" OnClick="location.href ='createroom?=${1}'">회의 방 생성</button>
+<button id="myBtn">회의 방 입장</button>
+
+<form action="joinroom" method="post">
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+	<!-- Modal content -->
+	<div class="modal-content">
+		<span class="close">&times;</span>
+
+			<div class="inp_text">
+				<p>
+					<label for="roomId" class="screen_out">방 번호</label>
+					<input type="text" placeholder="방 번호" id="roomId" name="roomId">
+				</p>
+			</div>
+			<div class="inp_text">
+				<label for="roomPw" class="screen_out">방 비밀번호</label>
+				<input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
+			</div>
+			<button type="submit">회의 방 입장</button>
+
+	</div>
+</div>
+</form>
+
 
 <div class="inner_login">
 	<div class="login">
 		<form action="main" method="post" id="authForm">
 			<fieldset>
+				<legend class="screen_out">로그인 정보 입력폼</legend>
 				<div class="box_login">
 					<div class="inp_text">
 						<label for="loginId" class="screen_out">아이디</label>
@@ -173,6 +232,20 @@
 						<label for="loginPw" class="screen_out">비밀번호</label>
 						<input type="password" placeholder="비밀번호" id="loginPw" name ="loginPw">
 					</div>
+				</div>
+				<button type="submit" class="btn_login">로그인</button>
+				<div class="login_append">
+					<div class="inp_chk">
+						<input type="checkbox" id="keepLogin" class="inp_radio" name="keepLogin">
+						<label for="keepLogin" class="lab_g">
+							<span class="img_top ico_check"></span>
+							<span class="txt_lab">로그인 상태 유지</span>
+						</label>
+					</div>
+					<span class="txt_find">
+						<a href="" class="link_find">아이디</a>
+						<a href="findpwd" class="link_find">비밀번호 찾기</a>
+					</span>
 				</div>
 				<%--<div style="margin-left: 200px; margin-top: 20px; float: left; display: inline;">아이디</div>
 				<div style="margin-left: 300px; margin-top: -25px; float: left; display: inline;"><input type="text" placeholder="아이디 조건" Name="id" id="inputid1"%></div>
@@ -221,10 +294,37 @@
 		</div>
 	</td>
 
-		<div OnClick="location.href ='findpwd'" style="cursor: pointer; margin-left: 310px; margin-top: -50px; float: left; display: inline;" id="asdf">비밀번호 찾기</div>
+		<%--<div OnClick="location.href ='findpwd'" style="cursor: pointer; margin-left: 310px; margin-top: -50px; float: left; display: inline;" id="asdf">비밀번호 찾기</div>--%>
 	</div>
 </table>
+<script type = "text/javascript">
+	// Get the modal
+	var modal = document.getElementById('myModal');
 
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on the button, open the modal
+	btn.onclick = function() {
+		modal.style.display = "block";
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+
+</script>
 	<%--<P CLASS="part1"><B> 보드게임 </B></P> <!-- 제목 -->
 	<ul>
 		<li><a class="active" href="#home">홈</a></li> <!-- 메뉴바의 홈 버튼 -->

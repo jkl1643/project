@@ -28,7 +28,6 @@ public class JavaConfig {
         return ds;
     }
 
-
     @Bean
     public MemberDao memberDao() {
         return new MemberDao(dataSource());
@@ -87,7 +86,7 @@ public class JavaConfig {
     public HashMap<Integer, MainServer> ServerList() throws Exception {
         HashMap<Integer, MainServer> serverList = new HashMap<Integer, MainServer>();
         System.out.println("serverList");
-        serverList.put(1, new MainServer());
+
 
         return serverList;
     }
