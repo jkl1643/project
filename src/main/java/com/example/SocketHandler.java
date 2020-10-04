@@ -64,28 +64,13 @@ public class SocketHandler extends TextWebSocketHandler {
         String msg = message.getPayload();
         System.out.println("메세지온거 = " + msg);
         //Chat chat = objectMapper.readValue(msg, Chat.class);
-        //String nick = chat.getUserNickName();
-        //String value = chat.getMsg();
-        //Chat message2 = new Chat();
-        //String sendMessage = objectMapper.writeValueAsString(message2); //보낼매새지
-        //session.sendMessage(new TextMessage(sendMessage));
-        //session.sendMessage(new TextMessage("echo : " + message.getPayload()));
-        //session2.getBasicRemote().sendText(" => " + msg);
-        /*for (User user : server.getUser_list().values()) {
-            WebSocketSession wss = user.getWss();
-            wss.sendMessage(new TextMessage(sendMessage));
-        }*/
-
-
         for (User user : server.getUser_list().values()) {
-            WebSocketSession wss = user.getWss();
-            wss.sendMessage(new TextMessage(msg));
-        }
-        /*String payloadMessage = message.getPayload();
 
-        for (WebSocketSession client : server.getUser_nick()) {
-            client.sendMessage(new TextMessage("ECHO : " + payloadMessage));
-        }*/
+            WebSocketSession wss = user.getWss();
+            if(!wss.equals(session)) {
+                wss.sendMessage(new TextMessage(msg));
+            }
+        }
 
 
     }// handleTextMessage : 메시지를 수신시 실행

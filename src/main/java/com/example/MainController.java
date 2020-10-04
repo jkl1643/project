@@ -2,7 +2,6 @@ package com.example;
 
 //import com.sun.org.apache.xpath.internal.operations.Mod;
 
-import com.sun.deploy.net.HttpResponse;
 import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import sun.applet.Main;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -474,13 +472,14 @@ public class MainController {
         }
         if(room2 == null){ //여기 세션에서 방이 만들어지지않았을때
             //serverList.put(1, new MainServer());
-            serverList.put(mem.getId().intValue(), new MainServer());
+            serverList.put(16, new MainServer());
             System.out.println("서버리스트밸류 : " + serverList.values());
-            MainServer server = serverList.get(mem.getId().intValue());
+            MainServer server = serverList.get(16);
             Room room = server.create();
 
             model.addAttribute("roomId", room.getID());
             model.addAttribute("roomPw", room.getPassword());
+            session.setAttribute("create", "create");
             session.setAttribute("room", room);
             System.out.println("만든사람1 방번호 : " + room.getID() + ", 비밀번호 : " + room.getPassword() + ", 서버 : " + serverList.get(mem.getId().intValue()));
             model.addAttribute("User_list", server.getUser_nick().keySet());
@@ -547,7 +546,7 @@ public class MainController {
                 server.select(ID, PW, name);
                 model.addAttribute("User_list", server.getUser_nick().keySet());
                 System.out.println("id2 : " + ID + ", pw2 : " + PW);
-                mav.setViewName("createroom");
+                mav.setViewName("c");
                 return mav;
             }
         } else { //방생성으로 들어갔을때
@@ -555,7 +554,7 @@ public class MainController {
             session.setAttribute("roompw", PW);
             server.select(room.getID(), room.getPassword(), mem.getNickname());
             model.addAttribute("User_list", server.getUser_nick().keySet());
-            mav.setViewName("createroom");
+            mav.setViewName("c");
             System.out.println("id3 : " + room.getID() + ", pw3 : " + room.getPassword());
             return mav;
         }

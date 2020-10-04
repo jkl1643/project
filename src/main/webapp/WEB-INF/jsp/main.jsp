@@ -190,7 +190,7 @@
 </style>
 
 <body>
-<button type="button" OnClick="location.href ='createroom?=${1}'">회의 방 생성</button>
+<button type="button" OnClick="location.href ='createroom'">회의 방 생성</button>
 <button id="myBtn">회의 방 입장</button>
 
 <form action="joinroom" method="post">

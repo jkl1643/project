@@ -5,6 +5,7 @@ public class Chat {
     private String roomPW;
     private String userNickName;
     private String msg;
+    private String target;
 
     public String getRoomID(){
         return roomID;
@@ -31,6 +32,14 @@ public class Chat {
         return msg;
     }
     public void setMsg(String msg){
+        this.msg = msg;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String msg) {
         this.msg = msg;
     }
 }
