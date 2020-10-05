@@ -7,6 +7,7 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <title>Title</title>
 </head>
+<body>
 <%
     Room room = (Room)request.getAttribute("room");
     String roomid = (String)request.getAttribute("roomid");
@@ -14,37 +15,32 @@
     System.out.println(session.getAttribute("cap"));
     String create = (String)session.getAttribute("create");
 %>
-<body bgcolor="#191970">
-    <div style="width: 100%; height: 100%; background-color: blueviolet">
-        <div style="width: 100%; height: 30%; background-color: brown">
-            <div style="width: 100%; height: 50%">
-                회의 아이디 : ${roomid} <BR>
-                회의 비밀번호 : ${roompw}<BR>
-                <table>
-                    <tr>
-                        <userlist id="pguserlist">
-                            <div id="userlist">
-                            </div>
-                        </userlist>
-                    </tr>
-                </table>
-                <ul class="userlistbox"></ul>
+회의 아이디 : ${roomid} <BR>
+회의 비밀번호 : ${roompw}<BR>
+<input id="msg" type="text">
+<input type="button" onclick="sendMessage()" value="Send">
+<input type="button" onclick="invite()" value="초대">
+<ul class="userlistbox"></ul>
+<div id="messageTextArea" rows="10" cols="50"></div>
+<table>
+    <tr>
+        <userlist id="pguserlist">
+            <div id="userlist">
             </div>
-            <div id="messageTextArea" style="overflow:auto; width:100%; height: 50%; background-color: aqua;">
-                <input id="msg" type="text"><input type="button" onclick="sendMessage()" style="align-items: center;" value="보내기">
-            </div>
+        </userlist>
+    </tr>
+</table>
+<div id = "output"></div>
 
-            <br>
+<video playsinline id="left_cam" controls preload="metadata" autoplay></video>
+<video playsinline id="right_cam" controls preload="metadata" autoplay></video>
 
-        </div>
 
-        <div style="width:100%; height:70%; background-color: #62ef2f;">
-            <video <%--playsinline--%> id="left_cam" <%--controls preload="metadata"--%> width="50%" height="50%" autoplay></video>
-            <video <%--playsinline--%> id="right_cam" <%--controls preload="metadata"--%> width="50%" height="50%" autoplay></video>
-        </div>
-    </div>
+
+<br>
+<button id="btn1" onclick="start()">Start</button>
+<button id="btn2" onclick="stop()">Stop</button>
 </body>
-
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 <script type = "text/javascript">
@@ -81,7 +77,7 @@
         offerToReceiveVideo: true
     };
 
-    /*localVideo.addEventListener("loadedmetadata", function () {
+    localVideo.addEventListener("loadedmetadata", function () {
         console.log('left: gotStream with width and height:', localVideo.videoWidth, localVideo.videoHeight);
     });
 
@@ -91,17 +87,17 @@
 
     remoteVideo.addEventListener('resize', () => {
         console.log(`Remote video size changed to ${remoteVideo.videoWidth}x${remoteVideo.videoHeight}`);
-    });*/
+    });
 
     //function invite() {
-        navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: true
-        })
-            .then(gotStream)
-            .catch(function (e) {
-                alert('getUserMedia() error: ' + e.name);
-            });
+    navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: true
+    })
+        .then(gotStream)
+        .catch(function (e) {
+            alert('getUserMedia() error: ' + e.name);
+        });
     //}
 
     function gotStream(stream) {
@@ -253,7 +249,7 @@
     }
 
     $(document).ready(function () {
-        $("#userlist").load("refreshuserlist");
+        //$("#userlist").load("refreshuserlist");
     });
 
     document.addEventListener('keydown', function (e) {
@@ -265,50 +261,57 @@
             sendMessage();
     }
 
-    function sendChatMessage() {
+    function sendMessage(message) {
         msg = document.getElementById("msg").value;
 
-        if(msg == ""){
-
-        } else {
+        if(msg != null){
             webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
             document.getElementById("msg").value = "";
         }
+
+        webSocket.send(JSON.stringify(message));
     }
 
-    function sendMessage(message) {
-        /*if(msg != null){
-            webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
-            document.getElementById("msg").value = "";
-        }*/
-        msg = document.getElementById("msg").value;
-        if (msg == "" || msg == " " || msg == null || msg == "{}" || msg == undefined || msg == "undefined") { //메세지가 비어있을때
-            webSocket.send(JSON.stringify({type : "chat2", userNickName : userNickName, roomID : roomid, roomPW : roompw}));
-        } else { //메세지가 비어있지 않을때
-            webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
-            document.getElementById("msg").value = "";
-        }
-        webSocket.send(JSON.stringify(message));
+    function init() {
+        testWebSocket();
+    }
+
+    function testWebSocket() {
+        webSocket = new WebSocket("ws://" + location.host + "/game");
+        webSocket.onopen = function(evt) {
+            onOpen(evt);
+        };
+        webSocket.onclose = function(evt) {
+            onClose(evt);
+        };
+        webSocket.onmessage = function(evt) {
+            onMessage(evt);
+        };
+        webSocket.onerror = function(evt) {
+            onError(evt);
+        };
+    }
+
+    function onOpen(evt) {
+        webSocket.send(JSON.stringify({userNickName : userNickName, roomID : roomid, roomPW : roompw}));
+        //$('#userlist').load("refreshuserlist");
+    }
+
+    function onClose(evt) {
+        window.location.href='home';
     }
 
     function onMessage(evt) {
         var js = evt.data;
         var data = JSON.parse(js);
         chatroom = document.getElementById("messageTextArea");
-
-        if (data.type == "chat") {
+        /*if (data.type == "chat") {
             if (data.roomID == roomid && data.roomPW == roompw) {
-                if (/*data.msg != null || data.msg != undefined || data.msg != "" || data.msg != '\n' || */data.msg != "undefined") {
-                    console.log("위 : " + data.msg);
+                if (data.msg != null || data.msg != undefined || data.msg != "" || data.msg != '\n' || data.msg != "undefined") {
                     chatroom.innerHTML = chatroom.innerHTML + "<br>" + data.msg;
-                    chatroom.scrollTop = chatroom.scrollHeight;
-                } else {
-                    console.log("아래 : " + data.msg);
-
                 }
             }
-        }
-
+        }*/
         if (data === "got user media"/* && create != "create"*/) {
             console.log("got user media받음");
             maybeStart();
@@ -335,8 +338,7 @@
             console.log("bye받음");
             handleRemoteHangup();
         }
-
-        if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
+        if (create == "create" && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]") {
             console.log("create == true");
             isInitiator = true;
             isChannelReady = true;
@@ -345,38 +347,10 @@
             isChannelReady = true;
         }
 
+
+
         chatroom.scrollTop = chatroom.scrollHeight;
-        $('#userlist').load("refreshuserlist");
-    }
-
-    function init() {
-        testWebSocket();
-    }
-
-    function testWebSocket() {
-        webSocket = new WebSocket("ws://" + location.host + "/game");
-        webSocket.onopen = function(evt) {
-            onOpen(evt);
-        };
-        webSocket.onclose = function(evt) {
-            onClose(evt);
-        };
-        webSocket.onmessage = function(evt) {
-            onMessage(evt);
-        };
-        webSocket.onerror = function(evt) {
-            onError(evt);
-        };
-    }
-
-    function onOpen(evt) {
-        webSocket.send(JSON.stringify({userNickName : userNickName, roomID : roomid, roomPW : roompw}));
-        $('#userlist').load("refreshuserlist");
-    }
-
-    function onClose(evt) {
-        window.location.href='home';
-        $('#userlist').load("refreshuserlist");
+        //$('#userlist').load("refreshuserlist");
     }
 
     function onError(evt) {

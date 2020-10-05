@@ -65,14 +65,21 @@ public class SocketHandler extends TextWebSocketHandler {
         System.out.println("메세지온거 = " + msg);
         //Chat chat = objectMapper.readValue(msg, Chat.class);
         for (User user : server.getUser_list().values()) {
-
             WebSocketSession wss = user.getWss();
-            if(!wss.equals(session)) {
+            if(!wss.equals(session)) { //자기자신에게 안보내기
                 wss.sendMessage(new TextMessage(msg));
             }
         }
 
-
+        if (msg.length() > 20) {
+            //System.out.println("msg.substring(0, 11) : " + msg.substring(0, 13));
+            if(msg.startsWith("{\"type\":\"chat")){
+                //System.out.println("chat임");
+            }
+        }
+        /*if(chat.getType().equals("chat")){
+            System.out.println("chat임");
+        }*/
     }// handleTextMessage : 메시지를 수신시 실행
 
     @Override
