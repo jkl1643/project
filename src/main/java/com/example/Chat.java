@@ -6,6 +6,7 @@ public class Chat {
     private String userNickName;
     private String msg;
     private String type;
+    private String userName;
 
     public String getRoomID(){
         return roomID;
@@ -41,5 +42,12 @@ public class Chat {
 
     public void setType(String msg) {
         this.msg = msg;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String msg){
+        this.userName = userName;
     }
 }

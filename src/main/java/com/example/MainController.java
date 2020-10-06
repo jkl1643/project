@@ -507,6 +507,7 @@ public class MainController {
         System.out.println("-----------joinroom---------");
         Member mem = (Member) session.getAttribute("mem");
         Room room = (Room) session.getAttribute("room");
+        model.addAttribute("username", mem.getNickname());
         if((Member)session.getAttribute("mem") == null) {
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();

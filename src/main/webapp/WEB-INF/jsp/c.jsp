@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.example.Room" %>
+<%@ page import="com.example.SocketHandler" %>
 
 <html>
 <head>
@@ -13,13 +14,14 @@
     String roompw = (String)request.getAttribute("roompw");
     System.out.println(session.getAttribute("cap"));
     String create = (String)session.getAttribute("create");
+    String username = (String)request.getAttribute("username");
 %>
-<body bgcolor="#191970">
+<body bgcolor="black">
     <div style="width: 100%; height: 100%; background-color: blueviolet">
-        <div style="width: 100%; height: 30%; background-color: brown">
+        <div style="width: 100%; height: 30%; background-color: #7f7c7c">
             <div style="width: 100%; height: 50%">
-                회의 아이디 : ${roomid} <BR>
-                회의 비밀번호 : ${roompw}<BR>
+                회의 아이디 : ${roomid} <br>
+                회의 비밀번호 : ${roompw}<br>
                 <table>
                     <tr>
                         <userlist id="pguserlist">
@@ -30,17 +32,15 @@
                 </table>
                 <ul class="userlistbox"></ul>
             </div>
-            <div id="messageTextArea" style="overflow:auto; width:100%; height: 50%; background-color: aqua;">
-                <input id="msg" type="text"><input type="button" onclick="sendMessage()" style="align-items: center;" value="보내기">
-            </div>
 
-            <br>
-
+            <div id="messageTextArea" style="overflow:auto; width:51%; height: 35%; background-color: #ffffff; outline:none;"></div><br>
+            <input id="msg" type="text" style="position:absolute; bottom:70%; width:50%; height:3.5%; border:none; outline:none; font-size:1.2em;">
+            <input type="button" align="right" onclick="sendMessage();" style="position:absolute; right: 49%; bottom:70%; width: 7%; height: 3.5%; border:none; background-color: #ffffff;" value="보내기">
         </div>
 
-        <div style="width:100%; height:70%; background-color: #62ef2f;">
-            <video <%--playsinline--%> id="left_cam" <%--controls preload="metadata"--%> width="50%" height="50%" autoplay></video>
-            <video <%--playsinline--%> id="right_cam" <%--controls preload="metadata"--%> width="50%" height="50%" autoplay></video>
+        <div style="width:100%; height:70%; background-color: #000000;">
+            <video id="left_cam" width="100%" height="50%" autoplay></video>
+            <video id="right_cam" width="100%" height="50%" autoplay></video>
         </div>
     </div>
 </body>
@@ -52,10 +52,10 @@
     var roomid = "${roomid}";
     var roompw = "${roompw}";
     var userNickName = "${User_list}";
+    var userName = "${username}";
     var messageTextArea = document.getElementById("messageTextArea");
     var create = "${create}";
     var answercount = 0;
-
 
     var isChannelReady = false;
     var isInitiator = false;
@@ -115,7 +115,6 @@
         }
         console.log("isInitiator후 : " + isInitiator);
     }
-
 
     var constraints = {
         video: true
@@ -265,7 +264,7 @@
             sendMessage();
     }
 
-    function sendChatMessage() {
+    /*function sendChatMessage() {
         msg = document.getElementById("msg").value;
 
         if(msg == ""){
@@ -274,7 +273,7 @@
             webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
             document.getElementById("msg").value = "";
         }
-    }
+    }*/
 
     function sendMessage(message) {
         /*if(msg != null){
@@ -283,31 +282,19 @@
         }*/
         msg = document.getElementById("msg").value;
         if (msg == "" || msg == " " || msg == null || msg == "{}" || msg == undefined || msg == "undefined") { //메세지가 비어있을때
-            webSocket.send(JSON.stringify({type : "chat2", userNickName : userNickName, roomID : roomid, roomPW : roompw}));
+            webSocket.send(JSON.stringify({type : "CHAT", userNickName : userNickName, roomID : roomid, roomPW : roompw}));
+            webSocket.send(JSON.stringify(message));
         } else { //메세지가 비어있지 않을때
-            webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
+            webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg, userName : userName}));
             document.getElementById("msg").value = "";
         }
-        webSocket.send(JSON.stringify(message));
+        //webSocket.send(JSON.stringify(message));
     }
 
     function onMessage(evt) {
         var js = evt.data;
         var data = JSON.parse(js);
         chatroom = document.getElementById("messageTextArea");
-
-        if (data.type == "chat") {
-            if (data.roomID == roomid && data.roomPW == roompw) {
-                if (/*data.msg != null || data.msg != undefined || data.msg != "" || data.msg != '\n' || */data.msg != "undefined") {
-                    console.log("위 : " + data.msg);
-                    chatroom.innerHTML = chatroom.innerHTML + "<br>" + data.msg;
-                    chatroom.scrollTop = chatroom.scrollHeight;
-                } else {
-                    console.log("아래 : " + data.msg);
-
-                }
-            }
-        }
 
         if (data === "got user media"/* && create != "create"*/) {
             console.log("got user media받음");
@@ -334,18 +321,29 @@
         } else if (data === "bye" && isStarted) {
             console.log("bye받음");
             handleRemoteHangup();
+        } else if (data.type == "chat") { //채팅전송 받은거 처리
+            if (data.roomID == roomid && data.roomPW == roompw) {
+                if (/*data.msg != null || data.msg != undefined || data.msg != "" || data.msg != '\n' || */data.msg != "undefined") {
+                    console.log("위 : " + data.msg);
+                    chatroom.innerHTML = chatroom.innerHTML + "<br>" + data.userName + " : " + data.msg;
+                    chatroom.scrollTop = chatroom.scrollHeight;
+                } else {
+                    console.log("아래 : " + data.msg);
+
+                }
+            }
         }
 
         if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
-            console.log("create == true");
+            //console.log("create == true");
             isInitiator = true;
             isChannelReady = true;
         } else {
-            console.log("create == else");
+            //console.log("create == else");
             isChannelReady = true;
         }
 
-        chatroom.scrollTop = chatroom.scrollHeight;
+        //chatroom.scrollTop = chatroom.scrollHeight;
         $('#userlist').load("refreshuserlist");
     }
 
