@@ -70,30 +70,44 @@ public class SocketHandler extends TextWebSocketHandler {
         String msg = message.getPayload();
         System.out.println("메세지온거 = " + msg);
         //JSONObject jsonObject = new JSONObject();
-        String nick = "1";
+        String nick = null;
+        String roomID = null;
+        String roomPW = null;
         if (msg.startsWith("{\"type\":\"chat")) {
             Chat chat = objectMapper.readValue(msg, Chat.class);
             nick = chat.getUserNickName();
+            roomID = chat.getRoomID();
+            roomPW = chat.getRoomPW();
         }
 
+        if (msg.startsWith("{\"type\":\"CHAT")) {
+            Chat chat = objectMapper.readValue(msg, Chat.class);
+            roomID = chat.getRoomID();
+            roomPW = chat.getRoomPW();
+        }
+
+        System.out.println("roomID : " + roomID);
+        System.out.println("sessionid : " + httpsession.getAttribute("roomid"));
         /*ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
 
 
         map = mapper.readValue(message, new TypeReference<Map<String, String>>(){});*/
 
-        for (User user : server.getUser_list().values()) {
-            WebSocketSession wss = user.getWss();
+        /*if (roomID.equals(httpsession.getAttribute("roomid")) && roomPW.equals(httpsession.getAttribute("roompw"))) {*/
+            for (User user : server.getUser_list().values()) {
+                WebSocketSession wss = user.getWss();
 
-            if(msg.startsWith("{\"type\":\"chat")) {
-                System.out.println(msg + "msg userNickName" + nick);
-                wss.sendMessage(new TextMessage(msg));
-            } else {
-                if(!wss.equals(session)) { //자기자신에게 안보내기
+                if (msg.startsWith("{\"type\":\"chat")) {
+                    System.out.println(msg + "msg userNickName" + nick);
                     wss.sendMessage(new TextMessage(msg));
+                } else {
+                    if (!wss.equals(session)) { //자기자신에게 안보내기
+                        wss.sendMessage(new TextMessage(msg));
+                    }
                 }
             }
-        }
+
         /*if(chat.getType().equals("chat")){
             System.out.println("chat임");
         }*/

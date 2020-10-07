@@ -505,9 +505,7 @@ public class MainController {
                                  @RequestParam(value = "roomPw", required = false) String PW) throws IOException {
         ModelAndView mav = new ModelAndView();
         System.out.println("-----------joinroom---------");
-        Member mem = (Member) session.getAttribute("mem");
-        Room room = (Room) session.getAttribute("room");
-        model.addAttribute("username", mem.getNickname());
+
         if((Member)session.getAttribute("mem") == null) {
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
@@ -515,7 +513,9 @@ public class MainController {
             out.flush();
             return mav;
         }
-
+        Member mem = (Member) session.getAttribute("mem");
+        Room room = (Room) session.getAttribute("room");
+        model.addAttribute("username", mem.getNickname());
         try {
             for (Integer key : serverList.keySet()) {
                 server = serverList.get(key);
@@ -536,7 +536,7 @@ public class MainController {
         //MainServer server = serverList.get(mem.getId().intValue()); //서버번호를 서버 고유아이디로해야할듯
         //MainServer server = serverList.get(mem.getId().intValue());
         if(room == null) { //이 세션에서 방만들어진적없을때 방입장으로 들어갔을때
-            System.out.println("아이디 : " + server.getRoom_list().get(ID));
+            System.out.println("아이디 : " + server.getRoom_list().get(ID) + "ID : " + ID);
             if (ID.equals(server.getRoom_list().get(ID).getID())) {
                 System.out.println("방번호같음 : ");
                 session.setAttribute("roomid", ID);

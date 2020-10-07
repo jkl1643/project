@@ -17,9 +17,9 @@ public class JavaConfig {
     public DataSource dataSource() {
         DataSource ds = new DataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://localhost/boardgameproject?characterEncoding=UTF-8&serverTimezone=UTC");
-        ds.setUsername("boardgame");
-        ds.setPassword("boardgame");
+        ds.setUrl("jdbc:mysql://localhost/zoomproject?characterEncoding=UTF-8&serverTimezone=UTC");
+        ds.setUsername("zoomproject");
+        ds.setPassword("zoomproject");
         ds.setInitialSize(2);
         ds.setMaxActive(10);
         ds.setTestWhileIdle(true);
