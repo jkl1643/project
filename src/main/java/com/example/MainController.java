@@ -265,6 +265,8 @@ public class MainController {
             while (en.hasMoreElements()) {
                 String key = en.nextElement().toString();
                 System.out.println(key + " : " + loginUsers.get(key));
+                if (key == null)
+                    break;
                 if (key.equals(member.getEmail())) {
                     try {
                         lgn.login(id, pwd);
@@ -483,6 +485,7 @@ public class MainController {
             session.setAttribute("room", room);
             System.out.println("만든사람1 방번호 : " + room.getID() + ", 비밀번호 : " + room.getPassword() + ", 서버 : " + serverList.get(mem.getId().intValue()));
             model.addAttribute("User_list", server.getUser_nick().keySet());
+            model.addAttribute("User_number", server.getUser_list().size());
             Set<String> keys2 = server.getUser_nick().keySet();
             for (String key : keys2) {
                 System.out.println("유저44 : " + key);
@@ -490,7 +493,6 @@ public class MainController {
             System.out.println("id1 : " + room.getID() + ", pw1 : " + room.getPassword());
             return joinroom(model, session, response, mem.getNickname(), room.getID(), room.getPassword());
         } else {
-
         }
 
         //이 세션에서 방이 만들어진적있을때
@@ -505,7 +507,6 @@ public class MainController {
                                  @RequestParam(value = "roomPw", required = false) String PW) throws IOException {
         ModelAndView mav = new ModelAndView();
         System.out.println("-----------joinroom---------");
-
         if((Member)session.getAttribute("mem") == null) {
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
@@ -535,8 +536,9 @@ public class MainController {
         //MainServer server =
         //MainServer server = serverList.get(mem.getId().intValue()); //서버번호를 서버 고유아이디로해야할듯
         //MainServer server = serverList.get(mem.getId().intValue());
+        System.out.println("room : " + room);
         if(room == null) { //이 세션에서 방만들어진적없을때 방입장으로 들어갔을때
-            System.out.println("아이디 : " + server.getRoom_list().get(ID) + "ID : " + ID);
+            System.out.println("getRoom_list : " + server.getRoom_list() + ", 아이디 : " + server.getRoom_list().get(ID) + ", ID : " + ID);
             if (ID.equals(server.getRoom_list().get(ID).getID())) {
                 System.out.println("방번호같음 : ");
                 session.setAttribute("roomid", ID);
@@ -545,7 +547,10 @@ public class MainController {
                     name = mem.getNickname();
                 }
                 server.select(ID, PW, name);
+                //model.addAttribute("roominfo", room.getUserCam());
                 model.addAttribute("User_list", server.getUser_nick().keySet());
+                model.addAttribute("User_number", server.getUser_list().size());
+                //model.addAttribute("roomUserName", room);
                 System.out.println("id2 : " + ID + ", pw2 : " + PW);
                 mav.setViewName("c");
                 return mav;
@@ -554,7 +559,9 @@ public class MainController {
             session.setAttribute("roomid", ID);
             session.setAttribute("roompw", PW);
             server.select(room.getID(), room.getPassword(), mem.getNickname());
+            model.addAttribute("roominfo", room.getUserCam());
             model.addAttribute("User_list", server.getUser_nick().keySet());
+            model.addAttribute("User_number", server.getUser_list().size());
             mav.setViewName("c");
             System.out.println("id3 : " + room.getID() + ", pw3 : " + room.getPassword());
             return mav;
@@ -573,6 +580,8 @@ public class MainController {
             System.out.println("유저444 : " + key);
         }
         mav.setViewName("createroom");*/
+
+
         return mav;
     }
     @GetMapping("/refreshuserlist")
@@ -600,6 +609,7 @@ public class MainController {
         }*/
 
         model.addAttribute("User_list", Server.getUser_nick().keySet());
+        model.addAttribute("User_number", server.getUser_list().size());
         mav.setViewName("Game_userlist"); // room 만든후 .
         return mav;
     }

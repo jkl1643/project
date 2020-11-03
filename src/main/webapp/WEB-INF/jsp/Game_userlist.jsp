@@ -14,7 +14,7 @@
 <body>
 <table border="1">
     <tr align="center">
-        <td> 참가자</td>
+        <td>참가자</td>
     </tr>
     <c:forEach var="user" items="${User_list}" varStatus="status">
         <tr>

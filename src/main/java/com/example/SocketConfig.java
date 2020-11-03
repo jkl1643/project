@@ -16,7 +16,7 @@ public class SocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(socketHandler, "/game").addInterceptors(new SocketHandlerInterceptor());
-        registry.addHandler(new CamHandler(), "/socket").setAllowedOrigins("*");
+        /*registry.addHandler(new CamHandler(), "/socket").setAllowedOrigins("*");*/
         System.out.println("소켓 핸들러");
     }
 }

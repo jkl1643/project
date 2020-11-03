@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-public class SocketHandler extends TextWebSocketHandler {
+public class 소켓핸들러원본 extends TextWebSocketHandler {
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -41,15 +41,36 @@ public class SocketHandler extends TextWebSocketHandler {
         String roompw = (String)httpsession.getAttribute("roompw");
 
         user.put(session.getId(), session);
+        //System.out.println("mem.getEmail() : " + mem.getEmail());
+        //System.out.println("session : " + session);
+        //System.out.println("roomid : " + roomid);
+        //System.out.println("room.getID() : " + room.getID());
+        /*server.connectuser(mem.getEmail(), session, room.getID()); //id값에 따라 어케되는지*/
         server.connectuser(mem.getNickname(), session, roomid); //id값에 따라 어케되는지
         Set<String> keys = user.keySet();
+        /*for (String key : keys) {
+            System.out.println("유저3 : " + key);
+        }
+        System.out.println("유저2 : " + user.values());*/
+
+        /*Set<String> keys2 = server.getUser_nick().keySet();
+        for (String key : keys2) {
+            System.out.println("유저4 : " + key);
+        }*/
 
         System.out.println("현재인원 : " + server.getUser_list().size() + ", 사이즈? : " + server.getUser_nick().size());
         int a = server.getUser_list().size();
         httpsession.setAttribute("size", a);
+        //System.out.println("roomuser수 : " + room.getPlayer());
+        /*JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "roomUserNum");
+        jsonObject.put("roomUserNum", room.getPlayer());*/
 
 
         super.afterConnectionEstablished(session); // 부모 실행
+        //Server.connectuser(nick, session, roomid);
+        //System.out.println("현재인원 : " + Server.getUser_list().size() + " " + Server.getUser_nick().size());
+
     }// 웹소켓 연결시 실행
 
     @Override
@@ -57,10 +78,12 @@ public class SocketHandler extends TextWebSocketHandler {
         HttpSession httpsession = (HttpSession) session.getAttributes().get("session");
         MainServer server = serverList.get(16);
         String msg = message.getPayload();
+        //System.out.println("메세지온거 = " + msg);
+        //JSONObject jsonObject = new JSONObject();
         String nick = null;
         String roomID = null;
         String roomPW = null;
-        System.out.println("메세지온거 = " + msg);
+
         if (msg.startsWith("{\"type\":\"chat")) {
             Chat chat = objectMapper.readValue(msg, Chat.class);
             nick = chat.getUserNickName();
@@ -74,15 +97,18 @@ public class SocketHandler extends TextWebSocketHandler {
             roomPW = chat.getRoomPW();
         }
 
-        if (msg.startsWith("{\"type\":\"VIDEO")) {
-            Chat chat = objectMapper.readValue(msg, Chat.class);
-            roomID = chat.getRoomID();
-            roomPW = chat.getRoomPW();
-        }
+        //System.out.println("roomID : " + roomID);
+        //System.out.println("sessionid : " + httpsession.getAttribute("roomid"));
+        /*ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
 
 
+        map = mapper.readValue(message, new TypeReference<Map<String, String>>(){});*/
+
+        /*if (roomID.equals(httpsession.getAttribute("roomid")) && roomPW.equals(httpsession.getAttribute("roompw"))) {*/
         for (User user : server.getUser_list().values()) {
             WebSocketSession wss = user.getWss();
+
             if (msg.startsWith("{\"type\":\"chat") || msg.startsWith("{\"type\":\"join")) {
                 wss.sendMessage(new TextMessage(msg));
             } else {
@@ -93,6 +119,27 @@ public class SocketHandler extends TextWebSocketHandler {
         }
         String create = (String)httpsession.getAttribute("create");
         Room room = (Room)httpsession.getAttribute("room");
+        /*try {
+            if (create.equals("create")) {
+                System.out.println("create들감 ");
+                if (roomID.equals(room.getID()) && roomPW.equals(room.getPassword())) {
+                    System.out.println("방비번같은거들감");
+                    for (User user : server.getUser_list().values()) {
+                        WebSocketSession wss = user.getWss();
+                        if (!wss.equals(session)) { //자기자신에게 안보내기
+                            wss.sendMessage(new TextMessage("1roomUserNum : " + room.getPlayer()));
+                            System.out.println("1roomUserNum보냄 : " + room.getPlayer());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }*/
+
+        /*if(chat.getType().equals("chat")){
+            System.out.println("chat임");
+        }*/
     }// handleTextMessage : 메시지를 수신시 실행
 
     @Override
@@ -100,15 +147,7 @@ public class SocketHandler extends TextWebSocketHandler {
         user.remove(session.getId(), session);
         HttpSession httpsession = (HttpSession) session.getAttributes().get("session");
         String nick = (String) httpsession.getAttribute("idid");
-        MainServer server = serverList.get(16);
-
-        for (User user : server.getUser_list().values()) {
-            WebSocketSession wss = user.getWss();
-            if (!wss.equals(session)) { //자기자신에게 안보내기
-                wss.sendMessage(new TextMessage("end"));
-            }
-        }
-
         super.afterConnectionClosed(session, status); // 부모 실행
+        //System.out.println("소켓 종료 : " + nick);
     }// afterConnectionClosed : 웹 소켓 close시 실행
 }

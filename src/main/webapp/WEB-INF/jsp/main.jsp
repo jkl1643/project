@@ -220,6 +220,13 @@
 <form action="logout" method="post">
     <button type="button" OnClick="location.href ='logout'" id="but5">로그아웃</button>
 </form>
+<form action="editaccount" method="post">
+    <Input Type="Submit" Value="정보수정">
+</form>
+<form action="delaccount" method="post">
+    <Input Type="Submit" Value="계정삭제">
+</form>
+
 
 
 <%--<div class="inner_login">

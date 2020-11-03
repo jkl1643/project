@@ -1,15 +1,13 @@
 package com.example;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Room {
     private String ID;
     private String name;
     private String password;
     private Set<String> usernicks;
+    private HashMap<String, Integer> userCam = new HashMap<>();
     private int player;
     double rand = Math.random();
     String srand = Double.toString(rand);
@@ -18,6 +16,7 @@ public class Room {
         this.name = name;
         this.usernicks = new HashSet<>();
         this.password = srand.substring(srand.length() - 11, srand.length() - 1);
+        this.userCam = new HashMap<>();
     }
 
     public boolean join(String nick, String pw) {
@@ -27,6 +26,7 @@ public class Room {
         }
         usernicks.add(nick);
         player = usernicks.size();
+        userCam.put(nick, usernicks.size());
         return true;
     }
 
@@ -34,6 +34,7 @@ public class Room {
         System.out.println("방 퇴장 : " + nick + " / " + ID);
         usernicks.remove(nick);
         player = usernicks.size();
+        userCam.remove(nick);
     }
 
     public String getID() {
@@ -69,5 +70,12 @@ public class Room {
     }
     public void setUsers(Set<String> users) {
         this.usernicks = users;
+    }
+
+    public HashMap<String, Integer> getUserCam() {
+        return userCam;
+    }
+    public void setUserCam(HashMap<String, Integer> usercam) {
+        userCam = usercam;
     }
 }

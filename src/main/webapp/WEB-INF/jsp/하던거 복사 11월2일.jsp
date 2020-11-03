@@ -3,6 +3,7 @@
 <%@ page import="com.example.Room" %>
 <%@ page import="com.example.SocketHandler" %>
 <%@ page import="org.python.antlr.op.In" %>
+
 <html>
 <head>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -23,6 +24,7 @@
 </head>
 <%
     /*Room room = (Room)request.getAttribute("room");*/
+
     String roomid = (String)request.getAttribute("roomid");
     String roompw = (String)request.getAttribute("roompw");
     System.out.println(session.getAttribute("cap"));
@@ -31,14 +33,9 @@
     /*int size = (int)request.getAttribute("User_number");*/
 %>
 <body bgcolor="black">
-
-<div style="width: 100%; height: 100%; background-color: blueviolet" id="aa">
+<div style="width: 100%; height: 100%; background-color: blueviolet">
     <div style="width: 100%; height: 30%; background-color: #bbbbbb">
         <div style="width: 100%; height: 50%">
-            <button id="btn1" onclick="screenShare()">Start</button>
-            <button id="btn3" onclick="recordstart()">녹화시작</button>
-            <button id="btn4" onclick="recordstop()">녹화중지</button>
-            <button id="btn5" onclick="recordstart()">Stop</button><br>
             회의 아이디 : ${roomid} <br>
             회의 비밀번호 : ${roompw}<br>
             <table>
@@ -57,56 +54,23 @@
         <input type="button" align="right" onclick="sendMessage();" style="position:absolute; right: 49%; bottom:70%; width: 7%; height: 3.5%; border:none; background-color: #ffffff;" value="보내기">
     </div>
 
-    <%--<div id="camdiv" style="width:100%; height:70%; background-color: #000000;">--%>
-    <div id="camdiv" style="width:30%; height:30%; background-color: #000000;">
-        <video id="left_cam" width="10%" height="10%" autoplay></video><%--본인캠--%>
+    <div id="camdiv" style="width:100%; height:70%; background-color: #000000;">
+        <video id="left_cam" width="30px" height="30px" autoplay></video><%--본인캠--%>
         <%--<video id="right_cam" width="100%" height="50%" autoplay></video>--%><%--상대캠--%>
     </div>
-    <div id="video-grid"></div>
-    <div id="element-to-record" style="width:100%;height:100%;background:green;"></div>
+    <div id="video-grid">
+        <video></video>
+        <video></video>
+        <video></video>
+
+    </div>
 </div>
+<button id="btn1" onclick="camStart()">Start</button>
+<button id="btn2" onclick="camStop()">Stop</button>
 </body>
-<script src="https://www.webrtc-experiment.com/RecordRTC/Whammy.js"></script>
-<script src="https://www.webrtc-experiment.com/RecordRTC/CanvasRecorder.js"></script>
+
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-<%--<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>--%>
-<%--<script src="https://www.webrtc-experiment.com/screenshot.js"></script>--%>
-<%--<script src="/RecordRTC.js"></script>--%>
-<canvas></canvas>
-<div id="element-to-record" style="width:100%;height:100%;background:green;"></div>
-<script>
-    var elementToRecord = document.getElementById('canvas');
-    var recorder = new CanvasRecorder(window.canvasElementToBeRecorded, {
-        disableLogs: false
-    });
-
-    // start recording <canvas> drawings
-    function recordstart() {
-        recorder.record();
-    }
-
-    // a few minutes later
-    function recordstop() {
-        recorder.stop(function (blob) {
-            var url = URL.createObjectURL(blob);
-            window.open(url);
-        });
-    }
-    /*var recorder = RecordRTC(elementToRecord, {
-        type: 'canvas',
-        showMousePointer: true,
-        useWhammyRecorder: true
-    });
-    function recordstart() {
-        recorder.startRecording();
-    }
-    function recordstop() {
-        recorder.stopRecording(function (url) {
-            window.open(url);
-        });
-    }*/
-</script>
 <script type = "text/javascript">
 
     var output, webSocket;
@@ -172,39 +136,6 @@
         videoGrid.append(video)
     }
 
-    function addVideo(screenStream) {
-        const video = document.createElement('video')
-        videoGrid.append(video)
-        video.srcObject = screenStream;
-    }
-
-    function screenShare() {
-        navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: true
-        }).then(function (audioStream) {
-            navigator.mediaDevices.getDisplayMedia({
-                audio: true,
-                video: true
-            }).then(function (screenStream) {
-                console.log("dasf")
-                //screenStream.addTrack(audioStream.getAudioTracks());
-                const video = document.createElement('video')
-                addVideo(screenStream)
-                addVideoStream(video);
-                video.srcObject = screenStream;
-
-                console.log('Adding local screenStream. -- 1');
-                //sendMessage('');
-                webSocket.send(JSON.stringify({type : "got user media2", screenStream : screenStream}));
-                if (isInitiator) {
-                    maybeStart2(screenStream);
-                }
-                console.log("22")
-            })
-        })
-    }
-
 
     //function invite() {
     navigator.mediaDevices.getUserMedia({
@@ -242,30 +173,15 @@
     function maybeStart() {
         console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
         //console.log("maybestart중 isStarted : " + isStarted + ", localstream : " + localStream + ", iscannel : " + isChannelReady);
-        if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
-            console.log('>>>>>> creating peer connection');
-            createPeerConnection();
-            pc.addStream(localStream);
-            isStarted = true;
-            console.log('isInitiator : ' + isInitiator);
-            if (isInitiator) {
-                doCall();
-            }
+        //if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
+        console.log('>>>>>> creating peer connection');
+        createPeerConnection();
+        pc.addStream(localStream);
+        isStarted = true;
+        console.log('isInitiator : ' + isInitiator);
+        if (isInitiator) {
+            doCall();
         }
-    }
-
-    function maybeStart2(screenStream) {
-        console.log('>>>>>>> maybeStart2() ');
-        //console.log("maybestart중 isStarted : " + isStarted + ", localstream : " + localStream + ", iscannel : " + isChannelReady);
-        //if (!isStarted && isChannelReady) {
-            console.log('>>>>>> creating peer connection2');
-            createPeerConnection();
-            pc.addStream(screenStream);
-            isStarted = true;
-            console.log('isInitiator : ' + isInitiator);
-            if (isInitiator) {
-                doCall();
-            }
         //}
     }
 
@@ -352,13 +268,13 @@
     }
 
     function handleRemoteStreamAdded(event) {
-        console.log("remotestream")
         //console.log('Remote stream added. : ' + event + ", event.stream : " + event.stream);
         //remoteStream = event.stream;
         const video = document.createElement('video')
         addVideoStream(video);
         const remoteStream = event.stream;
-        //remoteStream2[camCount] = event.stream;
+
+        remoteStream2[camCount] = event.stream;
         //console.log(event);
         video.srcObject = remoteStream;
         //remoteVideo.srcObject = remoteStream;
@@ -373,7 +289,6 @@
                 remoteVideo[size].srcObject = remoteStream
             }
         }*/
-        console.log("remotestream2")
         camCount++;
     }
 
@@ -396,7 +311,7 @@
 
     function stop() {
         isStarted = false;
-        pc.close();
+        //pc.close();
         pc = null;
     }
 
@@ -414,6 +329,10 @@
     }
 
     function sendMessage(message) {
+        /*if(msg != null){
+            webSocket.send(JSON.stringify({type : "chat", userNickName : userNickName, roomID : roomid, roomPW : roompw, msg : msg}));
+            document.getElementById("msg").value = "";
+        }*/
         msg = document.getElementById("msg").value;
         if (msg == "" || msg == " " || msg == null || msg == "{}" || msg == undefined || msg == "undefined") { //메세지가 비어있을때
             if (roomUserNum != null){ //인원수가 있는사람이 보내기
@@ -440,8 +359,6 @@
         if (data === "got user media"/* && create != "create"*/) {
             //console.log("got user media받음");
             maybeStart();
-        } else if (data.type === "got user media2") {
-            maybeStart2(data.screenStream);
         } else if (data.type === "offer") {
             //console.log("offer받음");
             if (!isInitiator && !isStarted) {
@@ -453,7 +370,7 @@
             //console.log("answer받음");
             pc.setRemoteDescription(new RTCSessionDescription(data));
         } else if (data.type === "candidate" && isStarted) {
-            console.log("candidate받음 : " + data.value);
+            //console.log("candidate받음");
             var candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate
@@ -466,8 +383,6 @@
             handleRemoteHangup();
         } else if (data.type === "join") {
             console.log("join")
-        } else if (data === "end"){
-            console.log("end받음")
         }
         if (data.type == "chat") { //채팅전송 받은거 처리
             if (data.roomID == roomid && data.roomPW == roompw) {
@@ -483,18 +398,65 @@
             }
         }
 
+        if (data.type == "roomUserNum") {
+            console.log("roomUserNum들어감");
+            if (data.roomID == roomid && data.roomPW == roompw) {
+                //console.log("roomUserNum들어가고 아디비번도들어감");
+                roomUserNum = data.roomUserNum;
+                //console.log("1111111roomUserNum : " + roomUserNum);
+                //console.log("222222roomUserNum : " + data.roomUserNum);
+                //console.log("333333333 : " + "${room.getPlayer()}");
+            }
+        }
+
         if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
             //console.log("create == true");
             isInitiator = true;
             isChannelReady = true;
+            /*if (check == 0) {
+                for (var i = 0; i < size; i++) {
+                    check = 1;
+                    console.log("for size : " + size);
+                    var tmp = "";
+                    tmp = tmp + "<video id='right_cam" + i + "' class='right_cam" + i + "' autoplay></video>"
+                    $("#camdiv").append(tmp);
+                    remoteVideo[i] = document.getElementById('right_cam' + i);
+                    video = document.querySelector('video');
+                    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                        video.srcObject = stream
+                    });
+                }
+                invite();
+            }*/
         } else {
             //console.log("create == else");
             isChannelReady = true;
             isInitiator = true;
-
-            //chatroom.scrollTop = chatroom.scrollHeight;
-            $('#userlist').load("refreshuserlist");
+            /*if (check == 0) {
+                for (var i = 0; i < size; i++) {
+                    check = 1;
+                    console.log("for size : " + size);
+                    var tmp = "";
+                    tmp = tmp + "<video id='right_cam" + i + "' class='right_cam" + i + "' autoplay></video>"
+                    $("#camdiv").append(tmp);
+                    remoteVideo[i] = document.getElementById('right_cam' + i);
+                    video = document.querySelector('video');
+                    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                        video.srcObject = stream
+                    });
+                }
+                invite();
+            }*/
         }
+
+        /*if (data.type == "join") {
+            console.log("join");
+            camStart();
+            invite();
+        }*/
+
+        //chatroom.scrollTop = chatroom.scrollHeight;
+        $('#userlist').load("refreshuserlist");
     }
 
     function init() {
@@ -523,6 +485,40 @@
         //const video = document.createElement('video')
         //addVideoStream(video);
         console.log("입장")
+        /*if (create != null) { //새로운 유저가 접속했을 때 실행, 방장과 아닌사람 둘다 실행되나
+            //console.log("캠주고받기");
+            //if (data.roomID == roomid && data.roomPW == roompw) { //같은 방에 들어왔을 때 캠생성, 주고받기
+            invite();
+            //}
+            //캠주고받기 시작
+        } else {
+            invite();
+        }*/
+        /*for (var i = 0; i < size; i++) {
+            var tmp ="";
+            tmp = tmp + "<video id='right_cam" + size + "' class='right_cam" + size + "' autoplay></video>"
+            $("#camdiv").append(tmp);
+            remoteVideo[size] = document.getElementById('right_cam' + size);
+            video = document.querySelector('video');
+            navigator.mediaDevices.getUserMedia(constraints).
+            then((stream) => {video.srcObject = stream});
+        }*/
+
+        /*if (check == 0) {
+            for (var i = 0; i < size; i++) {
+                check = 1;
+                console.log("for size : " + size);
+                var tmp = "";
+                tmp = tmp + "<video id='right_cam" + i + "' class='right_cam" + i + "' autoplay></video>"
+                $("#camdiv").append(tmp);
+                remoteVideo[i] = document.getElementById('right_cam' + i);
+                video = document.querySelector('video');
+                navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                    video.srcObject = stream
+                });
+            }
+            invite();
+        }*/
 
     }
 
