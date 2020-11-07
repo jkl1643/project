@@ -5,52 +5,45 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>소켓 서버</title>
-
-    <style>
-        #chat_box {
-            width: 800px;
-            min-width: 800px;
-            height: 500px;
-            min-height: 500px;
-            border: 1px solid black;
-        }
-        #msg {
-            width: 700px;
-        }
-        #msg_process {
-            width: 90px;
-        }
-    </style>
 </head>
 <body>
-<div id="chat_box"></div>
-<input type="text" id="msg">
-<button id="msg_process">전송</button>
-
-<script src="http://localhost:82/socket.io/socket.io.js"></script>
-<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<button id="btn5" onclick="sstart()">new start</button>
+<button id="btn6" onclick="sstop()">new start</button>
+<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+<script src="https://www.webrtc-experiment.com/screenshot.js"></script>
+<%--<div id="element-to-record" style="width:100%;height:100%;background:green;">
+    <input type="text" placeholder="아이디" id="loginqId" name="lqoginId">
+</div>--%>
+<button onclick="sstart()">Start Recording</button>
+<button onclick="sstop()">Stop Recording</button>
 <script>
-    $(document).ready(function(){
-        var socket = io("http://localhost:82");
+    var recorder = new RecordRTC_Extension();
 
-        //msg에서 키를 누를떄
-        $("#msg").keydown(function(key){
-            //해당하는 키가 엔터키(13) 일떄
-            if(key.keyCode == 13){
-                //msg_process를 클릭해준다.
-                msg_process.click();
-            }
+    function sstart() {
+        recorder.startRecording({
+            enableScreen: true,
+            enableMicrophone: true,
+            enableSpeakers: true
         });
+    }
 
-        //msg_process를 클릭할 때
-        $("#msg_process").click(function(){
-            //소켓에 send_msg라는 이벤트로 input에 #msg의 벨류를 담고 보내준다.
-            socket.emit("send_msg", $("#msg").val());
-            //#msg에 벨류값을 비워준다.
-            $("#msg").val("");
+    function sstop() {
+
+
+        recorder.stopRecording(function(blob) {
+            console.log(blob.size, blob);
+            var url = URL.createObjectURL(blob);
+
+            var doc = document,
+                link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a"),
+                event = doc.createEvent("MouseEvents");
+            link.href = URL.createObjectURL(blob);
+            link.download = "file11.webm";
+
+            event.initEvent("click", true, false);
+            link.dispatchEvent(event);
         });
-    });
+    };
 </script>
 </body>
 </html>
