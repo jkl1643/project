@@ -9,11 +9,13 @@ function screenShare() {
         }).then(function (screenStream) {
             console.log("dasf")
             //screenStream.addTrack(audioStream.getAudioTracks());
+
             const video = document.createElement('video')
-            addVideo(screenStream)
+
+            //addVideo(screenStream)
             addVideoStream(video);
             video.srcObject = screenStream;
-
+            console.log("screesstream : " + screenStream);
             console.log('Adding local screenStream. -- 1');
             //sendMessage('');
             webSocket.send(JSON.stringify({type: "got user media2", screenStream: screenStream}));
@@ -38,4 +40,10 @@ function maybeStart2(screenStream) {
         doCall();
     }
     //}
+}
+
+function addVideo(screenStream) {
+    const video = document.createElement('video')
+    videoGrid.append(video)
+    video.srcObject = screenStream;
 }

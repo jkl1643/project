@@ -133,7 +133,7 @@
             <td><Input Type = "Text" id = "nickname" Name = "nickname"> <BR></td>
         </tr>
     </table>
-    <Input Type = "Submit" Value = "제출합니다" id="text3">
+    <Input Type = "Submit" value="정보수정" id="text3">
     <Input type = "button" value="뒤로가기" id="text4" onClick="history.back();">
 </form>
 </body>

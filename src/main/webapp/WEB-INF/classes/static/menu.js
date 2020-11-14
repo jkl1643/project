@@ -4,7 +4,108 @@ var maindiv = document.getElementById('main');
 var menu = document.getElementById('menu');
 var bottom = document.getElementById('bottom');
 var userList = document.getElementById('userListMenu');
+
+var selectVideo = document.getElementsByTagName('video');
+
+var left_cam = document.getElementById('left_cam');
+var selectCanvas = document.getElementById('canvas');
 var userListMenu2 = false;
+let totalNum = 0;
+var left_cam_status = 0;
+var selectVideo_status = 0;
+var selectCanvas_status = 0;
+var selectVideo_exist = 0;
+var videoCount = 1;
+console.log("selectvideo : " + selectVideo.length)
+
+left_cam.addEventListener("mouseup",
+    function (a) {
+        if (left_cam_status == 0) {
+            if (totalNum == 2) {
+                left_cam_status = 1;
+                videoGrid.style.gridTemplateColumns = "80% 20%";
+            } else if (totalNum == 3) {
+                left_cam_status = 1;
+                videoGrid.style.gridTemplateColumns = "70% 15% 15%";
+            } else if (totalNum == 4) {
+                left_cam_status = 1;
+                videoGrid.style.gridTemplateColumns = "60% 10% 10% 10%";
+            }
+        } else if (left_cam_status == 1) {
+            if (totalNum == 2) {
+                left_cam_status = 0;
+                videoGrid.style.gridTemplateColumns = "50% 50%";
+            } else if (totalNum == 3) {
+                left_cam_status = 0;
+                videoGrid.style.gridTemplateColumns = "33% 33% 33%";
+            } else if (totalNum == 4) {
+                left_cam_status = 0;
+                videoGrid.style.gridTemplateColumns = "25% 25% 25% 25%";
+            }
+        }
+    }
+);
+
+/*selectVideo[1].addEventListener("mouseup",
+    function(b) {
+    console.log("aaaaaaaaa");
+    });*/
+    /*selectVideo[1].addEventListener("mouseup",
+        function (b) {
+            console.log("aaaaaaaaa");
+        });*/
+/*selectVideo[2].addEventListener("mouseup",
+    function(b) {
+        console.log("aaaaaaaaa");
+    });*/
+//try {
+    /*selectVideo.addEventListener("mouseup",
+        function (a) {
+            console.log("selectVideo_exist : " + selectVideo_exist);
+            if (selectVideo_status == 0) {
+                if (totalNum == 2) {
+                    selectVideo_status = 1;
+                    console.log("totalNum22 : " + totalNum);
+                    videoGrid.style.gridTemplateColumns = "80% 20%";
+                } else if (totalNum == 3) {
+                    selectVideo_status = 1;
+                    videoGrid.style.gridTemplateColumns = "70% 15% 15%";
+                }
+            } else if (selectVideo_status == 1) {
+                if (totalNum == 2) {
+                    selectVideo_status = 0;
+                    videoGrid.style.gridTemplateColumns = "50% 50%";
+                } else if (totalNum == 3) {
+                    selectVideo_status = 0;
+                    videoGrid.style.gridTemplateColumns = "33% 33% 33";
+                }
+            }
+        }
+    );*/
+//} catch (e) {
+    //console.log("에러");
+//}
+
+$(function(){
+    $('.left_cam').resizable({
+        minHeight : 50,
+        minWidth:70,
+        autoHide: true,
+        ghost : true
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 maindiv.addEventListener("mousemove",
     function (a) {

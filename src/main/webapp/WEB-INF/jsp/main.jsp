@@ -13,143 +13,43 @@
 </head>
 
 <style>
-    a {
-        color: #333;
-        text-decoration: none;
+    *{
+
     }
-    input {
-        -webkit-writing-mode: horizontal-tb !important;
-        text-rendering: auto;
-        color: initial;
-        letter-spacing: normal;
-        word-spacing: normal;
-        text-transform: none;
-        text-indent: 0px;
-        text-shadow: none;
-        display: inline-block;
-        text-align: start;
-        -webkit-appearance: textfield;
-        background-color: white;
-        -webkit-rtl-ordering: logical;
-        cursor: text;
-        margin: 0em;
-        font: 400 13.3333px Arial;
-        padding: 1px 0px;
-        border-width: 2px;
-        border-style: inset;
-        border-color: initial;
-        border-image: initial;
-    }
-    .inner_login {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin: -145px 0 0 -160px;
-    }
-    .login{
-        position: relative;
-        width: 320px;
-        margin: 0 auto;
-    }
-    .screen_out {
-        position: absolute;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-        line-height: 0;
-        text-indent: -9999px;
-    }
-    body, button, input, select, td, textarea, th {
-        font-size: 13px;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-    }
-    fieldset, img {
-        border: 0;
-    }
-    .login .box_login {
-        margin: 35px 0 0;
-        border: 1px solid #ddd;
-        border-radius: 3px;
-        background-color: #fff;
-        box-sizing: border-box;
-    }
-    .login .inp_text {
-        position: relative;
-        width: 100%;
-        margin: 10px;
-        padding: 18px 19px 19px;
-        box-sizing: border-box;
-    }
-    .login.inp_text .inp_text {
-        border-top: 1px solid #ddd;
-    }
-    .inp_text input {
-        display: block;
+    .buttons1 {
+        display: grid;
+        /*grid-template-rows: repeat(3, 200px);*/
+        grid-template-columns: repeat(2, 200px);/*
+        position: fixed;
+        top: 30%;
+        left: 30%;*/
+        /*float: left;*/
         width: 100%;
         height: 100%;
-        font-size: 13px;
-        color: #000;
-        border: none;
-        outline: 0;
-        -webkit-appearance: none;
-        background-color: transparent;
+        /*text-align: center;*/
+        padding: 100px;
+        justify-content: space-evenly;
+        align-content: space-evenly;
+        margin: 20px 0 0 -120px;
+        border: 1px solid black;
     }
-    .btn_login {
-        margin: 20px 0 0;
+    .buttons2 {
+        display: grid;
+        /*grid-template-rows: repeat(3, 200px);*/
+        grid-template-columns: repeat(3, 200px);/*
+        position: fixed;
+        top: 30%;
+        left: 30%;*/
+        /*float: left;*/
         width: 100%;
-        height: 48px;
-        border-radius: 3px;
-        font-size: 16px;
-        color: #fff;
-        background-color: #000;
+        height: 100%;
+        /*text-align: center;*/
+        padding: 100px;
+        justify-content: space-evenly;
+        align-content: space-evenly;
+        margin: 170px 0 0 -120px;
     }
-    .login_append {
-        overflow: hidden;
-        padding: 15px 0 0;
-    }
-    .inp_chk {
-        display: inline-block;
-        position: relative;
-        margin-bottom: -1px;
-    }
-    .login_append .inp_chk {
-        float: left;
-    }
-    .inp_chk .inp_radio {
-        position: absolute;
-        z-index: -1;
-        top: 0;
-        left: 0;
-        width: 18px;
-        height: 18px;
-        border: 0;
-    }
-    .inp_chk .lab_g {
-        display: inline-block;
-        margin-right: 19px;
-        color: #909090;
-        font-size: 13px;
-        line-height: 19px;
-        vertical-align: top;
-    }
-    .inp_chk .ico_check {
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        margin: 1px 4px 0 0;
-        background-position: -60px 0;
-        color: #333;
-    }
-    .inp_chk .txt_lab {
-        vertical-align: top;
-    }
-    .login_append .txt_find {
-        float: right;
-        color: #777;
-    }
-
-    /*모달*/
+     /*모달*/
     .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
@@ -168,7 +68,7 @@
         background-color: #fefefe;
         margin: 15% auto; /* 15% from the top and centered */
         padding: 20px;
-        border: 1px solid #888;
+        border: 1px solid #000000;
         width: 25%; /* Could be more or less, depending on screen size */
         height: 30%;
     }
@@ -185,47 +85,110 @@
         text-decoration: none;
         cursor: pointer;
     }
+    .buttonclass{
+        box-shadow:inset 0px 34px 0px -15px #b54b3a;
+        background-color:#a73f2d;
+        border:1px solid #241d13;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:27px;
+        font-weight:bold;
+        padding:9px 23px;
+        text-decoration:none;
+        text-shadow:0px -1px 0px #7a2a1d;
+        width: 200px;
+        height: 100px;
+        /*margin: 20px;*/
+    }
+    .buttonclass:hover {
+        background-color:#b34332;
+    }
+    .buttonclass:active {
+        position:relative;
+        top:1px;
+    }
+    /*.editInfo{
+        box-shadow:inset 0px 34px 0px -15px #b54b3a;
+        background-color:#a73f2d;
+        border:1px solid #241d13;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:15px;
+        font-weight:bold;
+        padding:9px 23px;
+        text-decoration:none;
+        text-shadow:0px -1px 0px #7a2a1d;
+    }
+    .delAcc{
+        box-shadow:inset 0px 34px 0px -15px #b54b3a;
+        background-color:#a73f2d;
+        border:1px solid #241d13;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:15px;
+        font-weight:bold;
+        padding:9px 23px;
+        text-decoration:none;
+        text-shadow:0px -1px 0px #7a2a1d;
+    }*/
 
 
 </style>
 
 <body>
-<button type="button" OnClick="location.href ='createroom'">회의 방 생성</button>
-<button id="myBtn">회의 방 입장</button>
+<div style="font-size: 50pt; text-align: center; left: 50%; margin: -12px 0 0 -180px; position: absolute">
+    웹 화상채팅
+</div>
+<div id="buttons1" class="buttons1">
+    <button type="button" OnClick="location.href ='createroom'" class="buttonclass">회의 방 생성</button>
+    <button id="myBtn" class="buttonclass">회의 방 입장</button>
+
+</div>
+<div style="font-size: 50pt; text-align: center; top: 300px; left: 50%; margin: 160px 0 0 -180px; position: absolute">
+    사용자 메뉴
+</div>
+<div class="buttons2">
+    <form action="logout" method="post">
+        <button type="button" OnClick="location.href ='logout'" id="but5" class="buttonclass">로그아웃</button>
+    </form>
+    <form action="editaccount" method="post">
+        <Input Type="Submit" Value="정보수정" class="buttonclass">
+    </form>
+    <form action="delaccount" method="post">
+        <Input Type="Submit" Value="계정삭제" class="buttonclass">
+    </form>
+</div>
 
 <form action="joinroom" method="post">
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
 
-        <!-- Modal content -->
-        <div class="modal-content">
-            <span class="close">&times;</span>
+                <div class="inp_text">
+                    <p>
+                        <label for="roomId" class="screen_out">방 번호</label>
+                        <input type="text" placeholder="방 번호" id="roomId" name="roomId">
+                    </p>
+                </div>
+                <div class="inp_text">
+                    <label for="roomPw" class="screen_out">방 비밀번호</label>
+                    <input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
+                </div>
+                <button type="submit">회의 방 입장</button>
 
-            <div class="inp_text">
-                <p>
-                    <label for="roomId" class="screen_out">방 번호</label>
-                    <input type="text" placeholder="방 번호" id="roomId" name="roomId">
-                </p>
             </div>
-            <div class="inp_text">
-                <label for="roomPw" class="screen_out">방 비밀번호</label>
-                <input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
-            </div>
-            <button type="submit">회의 방 입장</button>
 
         </div>
+    </form>
 
-    </div>
-</form>
-<form action="logout" method="post">
-    <button type="button" OnClick="location.href ='logout'" id="but5">로그아웃</button>
-</form>
-<form action="editaccount" method="post">
-    <Input Type="Submit" Value="정보수정">
-</form>
-<form action="delaccount" method="post">
-    <Input Type="Submit" Value="계정삭제">
-</form>
+
 
 
 

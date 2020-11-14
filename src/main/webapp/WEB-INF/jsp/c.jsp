@@ -8,18 +8,63 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <title>Title</title>
     <style>
+
+        :root {
+            --videoNum : 100%;
+            --canvasNum : 100%;
+            --totalNum : 0;
+        }
+
+        /*div {
+            resize: horizontal;
+            overflow: auto;
+        }*/
+
+        #middle {
+            /*display: grid;
+            !*grid-template-columns: repeat(auto-fill, var(--totalNum));
+            grid-auto-rows: var(--totalNum);*!
+            pointer-events: none;
+            grid-template-columns: repeat(auto-fill, 300px);
+            grid-auto-rows: 300px;*/
+            z-index: 1;
+        }
         #video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, 300px);
-            grid-auto-rows: 300px;
-            pointer-events: none;
+            /*resize: horizontal;
+            overflow: auto;*/
+            /*grid-template-columns: repeat(auto-fill, 300px);
+            grid-auto-rows: 300px;*/
+
+            /*grid-template-rows: repeat(var(--totalNum), 1fr);*/
+            grid-template-columns: repeat(var(--totalNum), 1fr);
+
+            z-index: 2;
+        }
+        #videoClass1 {
+            resize: horizontal;
+            overflow: auto;
         }
 
         video {
+            /*width: var(--totalNum);
+            height: var(--totalNum);*/
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            pointer-events: none;
+            object-fit: contain;
+            /*position: absolute;*/
+            /*top: 50%;*/
+            z-index: 3;
+            border: 2px solid #000000;
+        }
+
+        canvas {
+            border: 1px solid #525252;
+            background-color: white;
+            /*width: 300px;
+            height: 300px;*/
+            position: center;
+            display: none;
         }
         * {
             margin: 0;
@@ -32,12 +77,13 @@
             width: 100%;
             height: 55.5px;
             top: 0px;
-            background-color: black;
+            background-color: #2e57c9;
             display: none;
             border-radius: 3px;
             font-size: 16px;
             color: #fff;
             pointer-events: auto;
+            z-index: 4;
         }
 
         #menu ul li {
@@ -60,7 +106,7 @@
         }
 
         #menu ul li a:hover {
-            background: dimgray;
+            background: #244372;
             color: white;
             pointer-events: auto;
         }
@@ -71,12 +117,13 @@
             width: 100%;
             height: 55.5px;
             bottom: 0px;
-            background-color: #000000;
+            background-color: #2e57c9;
             display: none;
             border-radius: 3px;
             font-size: 16px;
             color: #fff;
             pointer-events: auto;
+            z-index: 5;
         }
 
         #bottom ul li {
@@ -95,28 +142,36 @@
         }
 
         #bottom ul li a:hover {
-            background: dimgray;
+            background: #244372;
             color: white;
         }
 
         #userListMenu {
-            position: fixed;
+            position: absolute;
             right: 0px;
             height: 100%;
-            width: 200px;
-            background-color: black;
+            width: 500px;
+            background-color: #001836;
             display: none;
             color: #fff;
             border-radius: 3px;
             font-size: 16px;
+            z-index: 6;
+            border: 2px solid dimgray;
         }
 
         #userListMenu table {
             color: #fff;
             font-size: 16px;
             width: 100%;
-            border: black;
+            border: 1px solid dimgray;
         }
+
+        #myCanvas {
+            display: none;
+        }
+
+
     </style>
 </head>
 <%
@@ -128,9 +183,32 @@
     String username = (String) request.getAttribute("username");
     /*int size = (int)request.getAttribute("User_number");*/
 %>
-<body <%--bgcolor="black" onload="startDrawCanvas()"--%>>
-<script src="${pageContext.request.contextPath}/webSocket.js"></script>
-<div id="main" style="position: absolute; width: 100%; height: 100%; background-color: #505757;">
+<body <%--onload="startDrawCanvas()"--%><%--bgcolor="black" onload="startDrawCanvas()"--%>>
+<%--<script src="${pageContext.request.contextPath}/webSocket.js"></script>--%>
+<div id="main" style="position: absolute; width: 100%; height: 100%; background-color: #ffffff;">
+    <div id="userListMenu" class="userListMenu">
+        <div style="height: 25%">
+            <table>
+                <tr>
+                    <userlist id="pguserlist">
+                        <div id="userlist">
+                        </div>
+                    </userlist>
+                </tr>
+            </table>
+        </div>
+        <div id="voice" style="color: white">
+        </div>
+        <div id="messageTextArea"
+             style="position:absolute; overflow: auto; bottom: 90px; width:100%; height: 20%; background-color: #ffffff; outline:none; color: black;">
+        </div>
+        <br>
+        <input id="msg" type="text" placeholder="채팅 입력"
+               style="position:absolute; bottom:55px; width:100%; height:3.5%; border:none; outline:none; font-size:1.2em;">
+        <input type="button" align="right" onclick="sendMessage();"
+               style="position:absolute; right: 0px; bottom:55px; width: 100px; height: 3.5%; border:none; background-color: #ffffff;"
+               value="보내기">
+    </div>
     <div class="menu" id="menu">
         <ul>
             <li>
@@ -149,7 +227,7 @@
         <%--<div style="width: 100%; height: 100%">
             <canvas id="myCanvas" style="background-color: aliceblue; width: 100%; height: 100%"></canvas>
         </div>--%>
-        <%--<script src="${pageContext.request.contextPath}/draw.js"></script>--%>
+
         <br>
         <%--회의 아이디 : ${roomid} <br>
         회의 비밀번호 : ${roompw}<br>--%>
@@ -163,21 +241,36 @@
         </table>
         <ul class="userlistbox"></ul>--%>
     </div>
-    <div id="middle" class="middle" style="height: 100%; width: 100%; background-color: #4b4b4b">
-        <%--<div id="video-grid" style="width:100%; height:100%; background-color: #a85c5c;">--%>
-            <video id="left_cam" style="width: 50%; height: 50%;" autoplay></video>
-        <%--</div>--%>
-        <div id="userListMenu" class="userListMenu">
-            <table>
-                <tr>
-                    <userlist id="pguserlist">
-                        <div id="userlist">
-
-                        </div>
-                    </userlist>
-                </tr>
-            </table>
+    <div id="middle" class="middle" style="height: 100%; width: 100%; background-color: #ffffff">
+        <div id="video-grid" class="video-grid" style="width:100%; height:100%; background-color: #ffffff;">
+            <video id="left_cam" class="left_cam" autoplay></video>
+            <%--<video style="height: 10%; width: 10%;"></video>--%>
+            <%--<canvas id="myCanvas" style="background-color: aliceblue; width: 500px; height: 500px"></canvas>--%>
+            <%--<canvas id="canvas" width="500" height="500"></canvas>--%>
         </div>
+        <%--<div id="userListMenu" class="userListMenu">
+            <div style="height: 50%">
+                <table>
+                    <tr>
+                        <userlist id="pguserlist">
+                            <div id="userlist">
+
+                            </div>
+                        </userlist>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="messageTextArea"
+                 style="position:absolute; overflow: auto; bottom: 90px; width:100%; height: 20%; background-color: #ffffff; outline:none; color: black;">
+            </div>
+            <br>
+            <input id="msg" type="text" placeholder="채팅 입력"
+                   style="position:absolute; bottom:55px; width:100%; height:3.5%; border:none; outline:none; font-size:1.2em;">
+            <input type="button" align="right" onclick="sendMessage();"
+                   style="position:absolute; right: 0px; bottom:55px; width: 100px; height: 3.5%; border:none; background-color: #ffffff;"
+                   value="보내기">
+        </div>--%>
     </div>
     <div id="bottom" class="bottom">
         <ul>
@@ -196,14 +289,7 @@
     </div>
 
 
-    <%--<div id="messageTextArea"
-         style="overflow:auto; width:51%; height: 35%; background-color: #ffffff; outline:none;"></div>
-    <br>
-    <input id="msg" type="text" placeholder="채팅 입력"
-           style="position:absolute; bottom:70%; width:50%; height:3.5%; border:none; outline:none; font-size:1.2em;">
-    <input type="button" align="right" onclick="sendMessage();"
-           style="position:absolute; right: 49%; bottom:70%; width: 7%; height: 3.5%; border:none; background-color: #ffffff;"
-           value="보내기">--%>
+
 
     <%--<div id="camdiv" style="width:100%; height:70%; background-color: #000000;">--%>
     <%--<div id="camdiv" style="width:30%; height:30%; background-color: #a85c5c;">
@@ -230,14 +316,32 @@
 <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 <script src="https://www.webrtc-experiment.com/screenshot.js"></script>
 <script src="${pageContext.request.contextPath}/cam.js"></script>
-
-<%--<script src="${pageContext.request.contextPath}/screenShare.js"></script>
+<script src="${pageContext.request.contextPath}/webSocket.js"></script>
+<script src="${pageContext.request.contextPath}/screenShare.js"></script>
 <script src="${pageContext.request.contextPath}/record.js"></script>
 <script src="${pageContext.request.contextPath}/menu.js"></script>
-<script src="${pageContext.request.contextPath}/idPwCopy.js"></script>--%>
+<script src="${pageContext.request.contextPath}/idPwCopy.js"></script>
+<script src="${pageContext.request.contextPath}/draw.js"></script>
+<script src="${pageContext.request.contextPath}/voice.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
 
 <%--<script src="/RecordRTC.js"></script>--%>
 <script type="text/javascript">
+
+    /*if (totalNum != 0) {
+        console.log("totalNum11 : " + totalNum);
+        left_cam.addEventListener("mouseup",
+            function (a) {
+                console.log("totalNum22 : " + totalNum);
+                videoGrid.style.gridTemplateColumns = "70% 30%";
+            });
+    } else {
+        console.log("totalNum33 : " + totalNum);
+    }*/
+
+    var canvasNum = $("canvas").length;
     var output, webSocket;
     var roomid = "${roomid}";
     var roompw = "${roompw}";
@@ -299,7 +403,7 @@
     remoteVideo.addEventListener('resize', () => {
         console.log(`Remote video size changed to ${remoteVideo.videoWidth}x${remoteVideo.videoHeight}`);
     });*/
-    function addVideoStream(video) {
+    /*function addVideoStream(video) {
         video.addEventListener('loadedmetadata', () => {
             video.play()
         })
@@ -310,7 +414,7 @@
         const video = document.createElement('video')
         videoGrid.append(video)
         video.srcObject = screenStream;
-    }
+    }*/
 
     $(document).ready(function () {
         $("#userlist").load("refreshuserlist");

@@ -1,3 +1,4 @@
+/*
 package com.example;
 
 import org.opencv.core.Core;
@@ -39,3 +40,4 @@ class Main {
         }
     }
 }
+*/

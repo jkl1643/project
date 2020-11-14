@@ -1,3 +1,4 @@
+/*
 package com.example;
 
 import org.opencv.core.Mat;
@@ -8,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 
+*/
 /*
 public class MyFrame {
     private final JFrame frame;
@@ -53,7 +55,8 @@ public class MyFrame {
         return image;
     }
 }
-*/
+*//*
+
 
 public class MyFrame {
 
@@ -102,3 +105,4 @@ public class MyFrame {
     }
 }
 
+*/

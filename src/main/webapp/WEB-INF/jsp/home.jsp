@@ -3,6 +3,7 @@
 <%@ page import="com.example.Member" %>
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="com.example.MainController" %>
+
 <%@ page import="org.python.util.PythonInterpreter" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -116,7 +117,7 @@
 	.login_append .inp_chk {
 		float: left;
 	}
-	.inp_chk .inp_radio {
+	.inp_chk .saveId {
 		position: absolute;
 		z-index: -1;
 		top: 0;
@@ -190,9 +191,23 @@
 </style>
 
 <body>
-<button type="button" OnClick="location.href ='createroom?=${1}'">회의 방 생성</button>
-<button id="myBtn">회의 방 입장</button>
-
+<%
+	Cookie [] cookie = request.getCookies();
+	String cookieId = "";
+	if(cookie != null) {
+		for(Cookie i : cookie) {
+			if(i.getName().equals("saveId")) {
+				cookieId = i.getValue();
+			}
+		}
+	}
+	System.out.println("cookie : " + cookieId);
+%>
+<%--<button type="button" OnClick="location.href ='createroom?=${1}'">회의 방 생성</button>
+<button id="myBtn">회의 방 입장</button>--%>
+<div style="font-size: 50pt; text-align: center; top: 10%; left: 50%; margin: -12px 0 0 -180px; position: absolute">
+	웹 화상채팅
+</div>
 <form action="joinroom" method="post">
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -212,7 +227,6 @@
 				<input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
 			</div>
 			<button type="submit">회의 방 입장</button>
-
 	</div>
 </div>
 </form>
@@ -226,7 +240,7 @@
 				<div class="box_login">
 					<div class="inp_text">
 						<label for="loginId" class="screen_out">아이디</label>
-						<input type="text" placeholder="아이디" id="loginId" name="loginId">
+						<input type="text" placeholder="아이디" id="loginId" name="loginId" value="<%=cookieId !="" ? cookieId : "" %>">
 					</div>
 					<div class="inp_text">
 						<label for="loginPw" class="screen_out">비밀번호</label>
@@ -236,14 +250,14 @@
 				<button type="submit" class="btn_login">로그인</button>
 				<div class="login_append">
 					<div class="inp_chk">
-						<input type="checkbox" id="keepLogin" class="inp_radio" name="keepLogin">
-						<label for="keepLogin" class="lab_g">
+						<input type="checkbox" id="saveId" class="saveId" name="saveId">
+						<label for="saveId" class="lab_g">
 							<span class="img_top ico_check"></span>
-							<span class="txt_lab">로그인 상태 유지</span>
+							<span class="txt_lab" >아이디 기억하기</span>
 						</label>
+
 					</div>
 					<span class="txt_find">
-						<a href="" class="link_find">아이디</a>
 						<a href="findpwd" class="link_find">비밀번호 찾기</a>
 					</span>
 				</div>
@@ -278,18 +292,18 @@
 				boolean created_account = (boolean)request.getAttribute("created_account");
 				boolean error = (boolean)request.getAttribute("error");
 				if(email) {	%>
-			<div id="yu">존재하지 않는 아이디입니다.</div>
+			<div>존재하지 않는 아이디입니다.</div>
 			<%} else if (email){ %>
-			<div id="yu">아이디를 입력해주세요.</div>
+			<div>아이디를 입력해주세요.</div>
 			<%}	else if (emailpwd) {%>
-			<div id="yu">이메일과 암호가 일치하지 않습니다.</div>
+			<div>이메일과 암호가 일치하지 않습니다.</div>
 			<%} else if (delaccount) {%>
-			<div id="yu">계정이 삭제되었습니다.</div>
+			<div>계정이 삭제되었습니다.</div>
 			<%} else if (logout) {%>
-			<div id="yu">로그아웃 되었습니다.</div>
+			<div>로그아웃 되었습니다.</div>
 			<%}
-				if (created_account) { %> <div id="yu">계정이 생성되었습니다.</div> <%}
-			if (error) { %>	<div id="yu">이미 있는 닉네임입니다.</div> <%}
+				if (created_account) { %> <div>계정이 생성되었습니다.</div> <%}
+			if (error) { %>	<div>이미 있는 닉네임입니다.</div> <%}
 		%>
 		</div>
 	</td>

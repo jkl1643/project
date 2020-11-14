@@ -1,8 +1,76 @@
 function addVideoStream(video) {
+    /*$( document ).ready(function() {
+        console.log("fffffffff")
+        $('.video-grid').append('<div id="videoClass" class="videoClass"></div>');
+        console.log("fffffffff")
+    });
+    var videoClass = document.getElementById('videoClass')*/
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
+    /*$(document).ready(function () {
+        $('.videoClass').resizable();
+        $('video').resizable();
+        /!*selectVideo[1].addEventListener("mouseup",
+            function(b) {
+                console.log("aaaaaaaaa");
+            });*!/
+    });*/
     videoGrid.append(video)
+    video.setAttribute("class", "videoClass" + videoCount);
+    videoCount = videoCount + 1;
+    var videoClass = video.getAttribute("class");
+    video.addEventListener("mouseup",
+        function(a){
+            console.log("selectVideo_status : " + selectVideo_status + " totalnum : " + totalNum);
+            if (selectVideo_status == 0) {
+                if (totalNum == 2) {
+                    selectVideo_status = 1;
+                    console.log("totalNum22 : " + totalNum);
+                    videoGrid.style.gridTemplateColumns = "20% 80%";
+                } else if (totalNum == 3) {
+                    selectVideo_status = 1;
+                    if (videoClass == "videoClass1") {
+                        videoGrid.style.gridTemplateColumns = "15% 70% 15%";
+                    } else if (videoClass == "videoClass2") {
+                        videoGrid.style.gridTemplateColumns = "15% 15% 70%";
+                    }
+                } else if (totalNum == 4) {
+                    selectVideo_status = 1;
+                    if (videoClass == "videoClass1") {
+                        videoGrid.style.gridTemplateColumns = "10% 60% 10% 10%";
+                    } else if (videoClass == "videoClass2") {
+                        videoGrid.style.gridTemplateColumns = "10% 10% 60% 10%";
+                    } else if (videoClass == "videoClass3") {
+                        videoGrid.style.gridTemplateColumns = "10% 10% 10% 60%";
+                    }
+                }
+            } else if (selectVideo_status == 1) {
+                if (totalNum == 2) {
+                    selectVideo_status = 0;
+                    videoGrid.style.gridTemplateColumns = "50% 50%";
+                } else if (totalNum == 3) {
+                    selectVideo_status = 0;
+                    videoGrid.style.gridTemplateColumns = "33% 33% 33%";
+                } else if (totalNum == 4) {
+                    selectVideo_status = 0;
+                    console.log("aaaa");
+                    videoGrid.style.gridTemplateColumns = "25% 25% 25% 25%";
+                }
+            }
+        });
+    var videoNum = $("video").length;
+    //var totalNum = 0;
+    console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
+    totalNum = videoNum + canvasNum;
+    console.log("totalNum : " + totalNum);
+    document.documentElement.style.setProperty('--videoNum', videoNum);
+    document.documentElement.style.setProperty('--canvasNum', canvasNum);
+    document.documentElement.style.setProperty('--totalNum', totalNum);
+    console.log("totalNum2 : " + totalNum);
+    selectVideo_exist = 1;
+    console.log("selectVideo_existㅂㅂ : " + selectVideo_exist);
+
 }
 
 //function invite() {
@@ -143,9 +211,9 @@ function handleRemoteStreamAdded(event) {
     console.log("remotestream")
     //console.log('Remote stream added. : ' + event + ", event.stream : " + event.stream);
     //remoteStream = event.stream;
-    const video = document.createElement('video')
+    var video = document.createElement('video')
     addVideoStream(video);
-    const remoteStream = event.stream;
+    var remoteStream = event.stream;
     //remoteStream2[camCount] = event.stream;
     //console.log(event);
     video.srcObject = remoteStream;
@@ -167,7 +235,9 @@ function handleRemoteStreamAdded(event) {
 
 function handleRemoteStreamRemoved(event) {
     console.log('Remote stream removed. Event: ', event);
-    video.remove();
+    var video = document.getElementById("video");
+    /*video.remove();*/
+    /*$('video').remove();*/
 }
 
 function hangup() {
@@ -178,12 +248,31 @@ function hangup() {
 
 function handleRemoteHangup() {
     console.log('Session terminated.');
+
     stop();
     isInitiator = false;
 }
 
 function stop() {
     isStarted = false;
+    var video = document.getElementById("video");
+    /*video.remove();*/
+    $('video:last').remove();
+    var videoNum = $("video").length;
+    if (drawCanvasCheck === 1) {
+        var canvasNum = 1;
+    } else if (drawCanvasCheck === 0) {
+        var canvasNum = 0;
+    }
+    videoCount = videoCount - 1;
+    console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
+    totalNum = videoNum + canvasNum;
+    console.log("totalNum : " + totalNum);
+    document.documentElement.style.setProperty('--videoNum', videoNum);
+    document.documentElement.style.setProperty('--canvasNum', canvasNum);
+    document.documentElement.style.setProperty('--totalNum', totalNum);
+    console.log("totalNum2 : " + totalNum);
     pc.close();
+
     pc = null;
 }

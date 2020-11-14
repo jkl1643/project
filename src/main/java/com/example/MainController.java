@@ -234,7 +234,7 @@ public class MainController {
                              @RequestParam(value = "loginId", required = false) String id,
                              @RequestParam(value = "loginPw", required = false) String pwd,
                              HttpServletResponse response, String saveId,
-             String oldpwd, String pwd2, String nickname, HttpSession session) {
+             String oldpwd, String pwd2, String nickname, HttpSession session) throws IOException {
         System.out.println("-------------메인 ----------------");
         ModelAndView mav = new ModelAndView();
         mav.addObject("unknown_email", false);
@@ -260,6 +260,8 @@ public class MainController {
         Member member = memberDao.selectByEmail(id);
         MemberLogin lgn = ctx.getBean("lgn", MemberLogin.class);
 
+
+
         if(name2 == null){
             Enumeration en = loginUsers.keys();
             while (en.hasMoreElements()) {
@@ -278,6 +280,8 @@ public class MainController {
                 }
             }
         }
+
+
         session.setAttribute("idid", id);
         delaccount = 0;
         model.addAttribute("userid", id);
@@ -314,6 +318,13 @@ public class MainController {
                 lgn.login(id, pwd); //로그인
                 loginUsers.put(id, id);
                 session.setAttribute("mem", member);
+                if((Member)session.getAttribute("mem") == null) {
+                    response.setContentType("text/html; charset=UTF-8");
+                    PrintWriter out = response.getWriter();
+                    out.println("<script>alert('로그인이 필요합니다.'); location.href='home';</script>");
+                    out.flush();
+                    return mav;
+                }
                 //session.setMaxInactiveInterval(10);
                 mav.addObject("login", 1);
                 System.out.println("id = " + id + ", pwd = " + pwd);
@@ -322,6 +333,7 @@ public class MainController {
                 model.addAttribute("userid", userid2);
                 login = 1; //로그인을했을때
                 if (saveId != null) {
+                    System.out.println("쿠키저장");
                     Cookie cookie = new Cookie("saveId", id);
                     response.addCookie(cookie);
                 }
@@ -345,8 +357,11 @@ public class MainController {
             }
         } else {
             mav.setViewName("main");
+
         }
         //mav.setViewName("home");
+
+
         return mav;
     }
 
@@ -538,7 +553,7 @@ public class MainController {
         //MainServer server = serverList.get(mem.getId().intValue());
         System.out.println("room : " + room);
         if(room == null) { //이 세션에서 방만들어진적없을때 방입장으로 들어갔을때
-            System.out.println("getRoom_list : " + server.getRoom_list() + ", 아이디 : " + server.getRoom_list().get(ID) + ", ID : " + ID);
+            /*System.out.println("getRoom_list : " + server.getRoom_list() + ", 아이디 : " + server.getRoom_list().get(ID) + ", ID : " + ID);*/
             if (ID.equals(server.getRoom_list().get(ID).getID())) {
                 System.out.println("방번호같음 : ");
                 session.setAttribute("roomid", ID);
@@ -554,6 +569,12 @@ public class MainController {
                 System.out.println("id2 : " + ID + ", pw2 : " + PW);
                 mav.setViewName("c");
                 return mav;
+            } else {
+                response.setContentType("text/html; charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<script>alert('해당하는 방이 없습니다.'); location.href='home';</script>");
+                out.flush();
+                return mav;
             }
         } else { //방생성으로 들어갔을때
             session.setAttribute("roomid", ID);
@@ -566,7 +587,7 @@ public class MainController {
             System.out.println("id3 : " + room.getID() + ", pw3 : " + room.getPassword());
             return mav;
         }
-        System.out.println("ID : " + ID + ", PW : " + PW);
+        /*System.out.println("ID : " + ID + ", PW : " + PW);*/
 
         /*if(name == null)
             name = mem.getNickname();
@@ -582,7 +603,7 @@ public class MainController {
         mav.setViewName("createroom");*/
 
 
-        return mav;
+        /*return mav;*/
     }
     @GetMapping("/refreshuserlist")
     public ModelAndView RefreshUserlist(Model model, HttpSession session) {
@@ -618,7 +639,7 @@ public class MainController {
     public ModelAndView cam(Model model){
         ModelAndView mav = new ModelAndView();
 
-        mav.setViewName("cam");
+        mav.setViewName("camtest");
         return mav;
     }
 

@@ -41,11 +41,31 @@ function onMessage(evt) {
     var data = JSON.parse(js);
     chatroom = document.getElementById("messageTextArea");
 
+
+    var videoNum = $("video").length;
+    if (drawCanvasCheck === 1) {
+        var canvasNum = 1;
+    } else if (drawCanvasCheck === 0) {
+        var canvasNum = 0;
+    }
+
+    /*console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
+    var totalNum = videoNum + canvasNum;
+    console.log("totalNum : " + totalNum);
+    document.documentElement.style.setProperty('--videoNum', videoNum);
+    document.documentElement.style.setProperty('--canvasNum', canvasNum);
+    document.documentElement.style.setProperty('--totalNum', totalNum);
+    console.log("totalNum2 : " + totalNum);*/
+
     if (data === "got user media"/* && create != "create"*/) {
         //console.log("got user media받음");
         maybeStart();
     } else if (data.type === "got user media2") {
+        console.log("screesstream : " + data.screenStream);
         maybeStart2(data.screenStream);
+    } else if (data.type === "got user media3") {
+        console.log("data.drawstream : " + data.drawStream);
+        maybeStart3(data.drawStream.getTracks());
     } else if (data.type === "offer") {
         //console.log("offer받음");
         if (!isInitiator && !isStarted) {
@@ -72,6 +92,8 @@ function onMessage(evt) {
         console.log("join")
     } else if (data === "end") {
         console.log("end받음")
+    } else if (data.type === "voice") {
+        document.getElementById("voice").innerHTML = data.voiceText;
     }
     if (data.type == "chat") { //채팅전송 받은거 처리
         if (data.roomID == roomid && data.roomPW == roompw) {
@@ -86,17 +108,19 @@ function onMessage(evt) {
             }
         }
     }
+    chatroom.scrollTop = chatroom.scrollHeight;
 
     if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
         //console.log("create == true");
         isInitiator = true;
         isChannelReady = true;
+        $('#userlist').load("refreshuserlist");
     } else {
         //console.log("create == else");
         isChannelReady = true;
         isInitiator = true;
 
-        //chatroom.scrollTop = chatroom.scrollHeight;
+
         $('#userlist').load("refreshuserlist");
     }
 }
@@ -128,6 +152,20 @@ function onOpen(evt) {
     //addVideoStream(video);
     console.log("입장")
 
+    var videoNum = $("video").length;
+    if (drawCanvasCheck === 1) {
+        var canvasNum = 1;
+    } else if (drawCanvasCheck === 0) {
+        var canvasNum = 0;
+    }
+
+    console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
+    totalNum = videoNum + canvasNum;
+    console.log("totalNum : " + totalNum);
+    document.documentElement.style.setProperty('--videoNum', videoNum);
+    document.documentElement.style.setProperty('--canvasNum', canvasNum);
+    document.documentElement.style.setProperty('--totalNum', totalNum);
+    console.log("totalNum2 : " + totalNum);
 }
 
 function onClose(evt) {
