@@ -15,6 +15,11 @@
             --totalNum : 0;
         }
 
+        ::-webkit-scrollbar {
+
+            display: none;
+
+        }
         /*div {
             resize: horizontal;
             overflow: auto;
@@ -28,6 +33,7 @@
             grid-template-columns: repeat(auto-fill, 300px);
             grid-auto-rows: 300px;*/
             z-index: 1;
+            -ms-overflow-style: none;
         }
         #video-grid {
             display: grid;
@@ -41,10 +47,6 @@
 
             z-index: 2;
         }
-        #videoClass1 {
-            resize: horizontal;
-            overflow: auto;
-        }
 
         video {
             /*width: var(--totalNum);
@@ -55,7 +57,7 @@
             /*position: absolute;*/
             /*top: 50%;*/
             z-index: 3;
-            border: 2px solid #000000;
+            /*border: 2px solid #000000;*/
         }
 
         canvas {
@@ -88,7 +90,7 @@
 
         #menu ul li {
             float: left;
-            width: 25%;
+            width: 24.92%;
             height: 25%;
             list-style: none;
             text-align: center;
@@ -100,9 +102,10 @@
 
         #menu ul li a {
             display: block;
-            width: 90%;
-            padding: 17.5px;
+            width: 100%;
+            padding: 17.4px 0px;
             pointer-events: auto;
+            /*border: 1px solid black;*/
         }
 
         #menu ul li a:hover {
@@ -126,10 +129,19 @@
             z-index: 5;
         }
 
-        #bottom ul li {
+        .liClass{
             float: left;
-            width: 25%;
-            height: 25%;
+            width: 15%;
+            height: 100%;
+            list-style: none;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .idClass {
+            float: left;
+            width: 450px;
+            height: 100%;
             list-style: none;
             text-align: center;
             vertical-align: middle;
@@ -137,8 +149,9 @@
 
         #bottom ul li a {
             display: block;
-            width: 90%;
-            padding: 17.5px;
+            width: 100%;
+            padding: 17.4px 0px;
+            pointer-events: auto;
         }
 
         #bottom ul li a:hover {
@@ -150,7 +163,7 @@
             position: absolute;
             right: 0px;
             height: 100%;
-            width: 500px;
+            width: 400px;
             background-color: #001836;
             display: none;
             color: #fff;
@@ -171,6 +184,42 @@
             display: none;
         }
 
+        #blank {
+            float: left;
+            width: 1%;
+            height: 25%;
+            list-style: none;
+            text-align: center;
+            /* display: block; */
+
+            vertical-align: middle;
+        }
+
+        #menu ul ol {
+            float: left;
+            width: 1px;
+            height: 100%;
+            list-style: none;
+            text-align: center;
+            /* display: block; */
+            background: black;
+            vertical-align: middle;
+            /*padding: 17.4px 0px;*/
+            border: 0px solid black;
+        }
+
+        #bottom ul ol {
+            float: left;
+            width: 1px;
+            height: 100%;
+            list-style: none;
+            text-align: center;
+            /* display: block; */
+            background: black;
+            vertical-align: middle;
+            /*padding: 17.4px 0px;*/
+            border: 0px solid black;
+        }
 
     </style>
 </head>
@@ -185,7 +234,7 @@
 %>
 <body <%--onload="startDrawCanvas()"--%><%--bgcolor="black" onload="startDrawCanvas()"--%>>
 <%--<script src="${pageContext.request.contextPath}/webSocket.js"></script>--%>
-<div id="main" style="position: absolute; width: 100%; height: 100%; background-color: #ffffff;">
+<div id="main" style="position: absolute; width: 100%; height: 100%; background-color: #ffffff; -ms-overflow-style: none;">
     <div id="userListMenu" class="userListMenu">
         <div style="height: 25%">
             <table>
@@ -197,16 +246,21 @@
                 </tr>
             </table>
         </div>
-        <div id="voice" style="color: white">
+        <div style="position:absolute;text-align: center; width: 100%; height: 50px; bottom: 46.7%; border: 1px solid white; line-height: 50px;">
+            음성 기록
         </div>
-        <div id="messageTextArea"
-             style="position:absolute; overflow: auto; bottom: 90px; width:100%; height: 20%; background-color: #ffffff; outline:none; color: black;">
+        <div id="voice" style="position:absolute; color: #000000; background: white; width: 100%; height: 20%; border: 1px solid black; bottom: 26.3%; overflow: auto;">
+        </div>
+        <div style="position:absolute;text-align: center; width: 100%; height: 50px; bottom: 20.5%; border: 1px solid white; line-height: 50px;">
+            채팅창
+        </div>
+        <div id="messageTextArea" style="position:absolute; overflow: auto; bottom: 0px; width:100%; height: 20%; background-color: #ffffff; outline:none; color: black; border: 1px solid black;">
         </div>
         <br>
         <input id="msg" type="text" placeholder="채팅 입력"
-               style="position:absolute; bottom:55px; width:100%; height:3.5%; border:none; outline:none; font-size:1.2em;">
+               style="position:absolute; bottom:0px; width:100%; height:3.5%; border:1px solid black; outline:none; font-size:1.2em;">
         <input type="button" align="right" onclick="sendMessage();"
-               style="position:absolute; right: 0px; bottom:55px; width: 100px; height: 3.5%; border:none; background-color: #ffffff;"
+               style="position:absolute; right: 0px; bottom:0px; width: 100px; height: 3.5%; border: 1px solid black; background-color: #ffffff;"
                value="보내기">
     </div>
     <div class="menu" id="menu">
@@ -214,12 +268,21 @@
             <li>
                 <a onclick="screenShare()">화면 공유</a>
             </li>
+            <ol class="blank">
+                <a></a>
+            </ol>
             <li>
                 <a onclick="recordstart()">녹화 시작</a>
             </li>
+            <ol class="blank">
+                <a></a>
+            </ol>
             <li>
                 <a onclick="recordstop()">녹화 종료</a>
             </li>
+            <ol class="blank">
+                <a></a>
+            </ol>
             <li>
                 <a onclick="startDrawCanvas()">화이트보드 열기</a>
             </li>
@@ -274,14 +337,23 @@
     </div>
     <div id="bottom" class="bottom">
         <ul>
-            <li>
-                <text>회의 아이디 : ${roomid} <br> 회의 비밀번호 : ${roompw}</text>
+            <li class="idClass">
+                <div style="width: 100%; height: 100%; line-height: 27px; text-align: left">
+                    &emsp; 회의 아이디 : ${roomid} <br>
+                    &emsp; 회의 비밀번호 : ${roompw}
+                </div>
             </li>
-            <li>
+            <ol class="blank">
+                <a></a>
+            </ol>
+            <li class="liClass">
                 <%--<input type="button" value="복사하기" onclick="copy()">--%>
                 <a onclick="copy()">복사하기</a>
             </li>
-            <li>
+            <ol class="blank">
+                <a></a>
+            </ol>
+            <li class="liClass">
                 <a onclick="userListOpen()">참가자 목록</a>
             </li>
         </ul>

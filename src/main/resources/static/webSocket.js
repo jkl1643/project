@@ -109,7 +109,7 @@ function onMessage(evt) {
         }
     }
     chatroom.scrollTop = chatroom.scrollHeight;
-
+    voice.scrollTop = voice.scrollHeight;
     if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
         //console.log("create == true");
         isInitiator = true;
