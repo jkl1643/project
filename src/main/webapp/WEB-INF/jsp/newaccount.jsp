@@ -6,7 +6,7 @@
 <title>회원가입</title>
 <STYLE TYPE="text/css">
 <!--
-	BODY {background-image: url("board2.jpg"); background-repeat: no-repeat; background-size: cover}
+	BODY {background-image: url(""); background-repeat: no-repeat; background-size: cover}
 	.title {text-align: center; font-family: sans-serif; color: brown}
 	table#table1 {width: 400px; height: 400px; position: relative; left: 400px; top: 10px}
 	input#text2 {position: relative; left: 800px; top: 75px}
@@ -99,7 +99,7 @@
 				<td><Input Type="Text" id="NICKNAME" Name="NICKNAME2"> <BR></td>
 			</tr>
 		</table>
-		<Input Type="Submit" Value="제출합니다" id="text3">
+		<Input Type="Submit" Value="회원가입" id="text3">
 		<Input type="reset" value="다시입력" id="text5">
 		<Input type="button" value="뒤로가기" id="text4" onClick="history.back();">
 	</form>

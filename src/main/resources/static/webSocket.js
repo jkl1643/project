@@ -65,7 +65,7 @@ function onMessage(evt) {
         maybeStart2(data.screenStream);
     } else if (data.type === "got user media3") {
         console.log("data.drawstream : " + data.drawStream);
-        maybeStart3(data.drawStream.getTracks());
+        maybeStart3(/*data.drawStream*/);
     } else if (data.type === "offer") {
         //console.log("offer받음");
         if (!isInitiator && !isStarted) {

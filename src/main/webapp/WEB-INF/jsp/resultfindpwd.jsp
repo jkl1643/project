@@ -8,10 +8,10 @@
 	<STYLE TYPE="text/css">
 		<!--
 		BODY {background-image: url(""); background-repeat: no-repeat; background-size: cover}
-		div#box1 {background-color: #ffffff; width: 800px; height: 300px; border: 5px solid black; position: relative; left: 500px; top: 100px}
+		div#box1 {background-color: #ffffff; width: 800px; height: 300px; border: 5px solid black; position: relative; left: 20%; top: 100px}
 		div#box2 {width: 580px; height: 500px; border: 10px solid #000000; position: relative; left: 1120px; top: -52px; background-color: #f6fad7; font-size: 20px;}
 		p#text1 {text-align: center; font-size: x-large; position: relative; top: 70px}
-		button#button1 {width: 150px; height: 100px; position: relative; left: 300px; top: 450px; background-color: black; color: white}
+		button#button1 {width: 150px; height: 100px; position: relative; left: 40%; top: 450px; background-color: black; color: white}
 		input#text4 {background-color: black; color: white; width: 100px; height: 50px; position: relative; left: 170px; top: 100px}
 		-->
 	</STYLE>
@@ -33,7 +33,6 @@
 			</c:forEach>
 		<%}%>
 	<button id="button1" onclick="location.href='home'">홈으로</button>
-	<Input type = "button" value="뒤로가기" id="text4" onClick="history.back();">
 	</div>
 </body>
 </html>

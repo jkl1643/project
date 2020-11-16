@@ -1,12 +1,15 @@
-
+var recorder = new RecordRTC_Extension();
 
 function recordstart() {
-    var recorder = new RecordRTC_Extension();
+
+
     recorder.startRecording({
+
         enableScreen: true,
         enableMicrophone: true, //캠에 소리추가되면 됨
         enableSpeakers: true
     });
+    console.log("녹화")
 }
 
 function recordstop() {

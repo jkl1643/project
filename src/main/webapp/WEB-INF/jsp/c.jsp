@@ -57,7 +57,8 @@
             /*position: absolute;*/
             /*top: 50%;*/
             z-index: 3;
-            /*border: 2px solid #000000;*/
+
+            border: 2px solid #000000;
         }
 
         canvas {
@@ -66,7 +67,7 @@
             /*width: 300px;
             height: 300px;*/
             position: center;
-            display: none;
+            /*display: none;*/
         }
         * {
             margin: 0;
@@ -282,10 +283,10 @@
             </li>
             <ol class="blank">
                 <a></a>
-            </ol>
+            </ol><%--
             <li>
-                <a onclick="startDrawCanvas()">화이트보드 열기</a>
-            </li>
+                <a onclick="canvasShare()">화이트보드 열기</a>
+            </li>--%>
         </ul>
         <%--<div style="width: 100%; height: 100%">
             <canvas id="myCanvas" style="background-color: aliceblue; width: 100%; height: 100%"></canvas>
@@ -337,6 +338,12 @@
     </div>
     <div id="bottom" class="bottom">
         <ul>
+            <li class="liClass">
+                <a onclick="userListOpen()">참가자 목록</a>
+            </li>
+            <ol class="blank">
+                <a></a>
+            </ol>
             <li class="idClass">
                 <div style="width: 100%; height: 100%; line-height: 27px; text-align: left">
                     &emsp; 회의 아이디 : ${roomid} <br>
@@ -350,12 +357,8 @@
                 <%--<input type="button" value="복사하기" onclick="copy()">--%>
                 <a onclick="copy()">복사하기</a>
             </li>
-            <ol class="blank">
-                <a></a>
-            </ol>
-            <li class="liClass">
-                <a onclick="userListOpen()">참가자 목록</a>
-            </li>
+
+
         </ul>
 
     </div>
@@ -457,11 +460,6 @@
                 username: "webrtc@live.com"
             }
         ]
-    };
-
-    var sdpConstraints = {
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true
     };
 
     /*localVideo.addEventListener("loadedmetadata", function () {

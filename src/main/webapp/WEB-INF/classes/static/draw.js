@@ -108,9 +108,9 @@ function canvasShare() {
         }
         console.log("22")
     });*/
-    var canvasElt = document.createElement('canvas');
-    canvasElt.style.display="inline";
-    addVideoStream(canvasElt);
+    /*var canvasElt = document.createElement('canvas');*/
+    /*canvasElt.style.display="inline";*/
+    /*addVideoStream(canvasElt);*/
     startDrawCanvas()
 }
 
@@ -122,7 +122,7 @@ function startDrawCanvas() {
     //---------------------------------------
     drawCanvasCheck = 1;
     canvas = document.getElementById("canvas");
-    canvas.style.display="inline";
+    /*canvas.style.display="inline";*/
     ctx = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", listener);
@@ -146,18 +146,46 @@ function startDrawCanvas() {
     console.log("totalNum2 : " + totalNum);*/
     //---------------------------------------
 
-    /*var video = document.createElement('video');
+    var video = document.createElement('video');
     var canvasElt = document.querySelector('canvas');
     var drawStream = canvasElt.captureStream(25);
     console.log("drawstream" + drawStream);
 
-    //addVideo(screenStream)
+
+
+    video.srcObject = drawStream;
+
     addVideoStream(video);
-    video.srcObject = drawStream;*/
 
+    var canvasstream;
+    navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false
+    }).then(gotStream2)
+    .catch(function (e) {
+        alert('getUserMedia() error: ' + e.name);
+    });
 
-
-
+    function gotStream2(stream) {
+        console.log('Adding local stream. -- 11');
+        console.log("2");
+        canvasstream = stream
+        //localVideo2.srcObject = stream;
+        sendMessage('got user media3');
+        webSocket.send(JSON.stringify({type: "got user media3", drawStream: stream}));
+        console.log("3");
+        if (isInitiator) {
+            console.log("4");
+            maybeStart3();
+        }
+        /*webSocket.send(JSON.stringify({type: "got user media3", drawStream: canvasstream}));*/
+        console.log("5");
+    }
+     /*
+        if (isInitiator) {
+            maybeStart3(localMediaStream);
+        }
+    });*/
 
 }
 

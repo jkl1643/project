@@ -70,7 +70,7 @@
 	}
 	.login .box_login {
 		margin: 35px 0 0;
-		border: 1px solid #ddd;
+		border: 2px solid #363636;
 		border-radius: 3px;
 		background-color: #fff;
 		box-sizing: border-box;
@@ -103,7 +103,7 @@
 		border-radius: 3px;
 		font-size: 16px;
 		color: #fff;
-		background-color: #000;
+		background-color: #10167f;
 	}
 	.login_append {
 		overflow: hidden;
@@ -169,7 +169,7 @@
 		background-color: #fefefe;
 		margin: 15% auto; /* 15% from the top and centered */
 		padding: 20px;
-		border: 1px solid #888;
+		border: 1px solid #000000;
 		width: 25%; /* Could be more or less, depending on screen size */
 		height: 30%;
 	}
@@ -248,6 +248,7 @@
 					</div>
 				</div>
 				<button type="submit" class="btn_login">로그인</button>
+		</form>
 				<div class="login_append">
 					<div class="inp_chk">
 						<input type="checkbox" id="saveId" class="saveId" name="saveId">
@@ -257,9 +258,15 @@
 						</label>
 
 					</div>
+
+					<form action="newaccount" method="post">
 					<span class="txt_find">
+
+							<Input Type="Submit" Value="회원가입 / " id="signupbutton1" style="border: none;">
+
 						<a href="findpwd" class="link_find">비밀번호 찾기</a>
 					</span>
+					</form>
 				</div>
 				<%--<div style="margin-left: 200px; margin-top: 20px; float: left; display: inline;">아이디</div>
 				<div style="margin-left: 300px; margin-top: -25px; float: left; display: inline;"><input type="text" placeholder="아이디 조건" Name="id" id="inputid1"%></div>
@@ -268,19 +275,18 @@
 				<div style="margin-left: 300px; margin-top: -25px; float: left;"><input type="password" placeholder="비밀번호 조건" Name ="pwd"></div>
 				<div style="margin-left: 250px; margin-top: 20px; float: left;"></div>
 				<div><Input Type = "Submit" Value = "로그인" id="loginbutton1"></div>--%>
+				<div <%--style="border: 1px solid black; width: 10px; height: 10px;"--%>>
+
+				</div>
 			</fieldset>
-		</form>
+
 	</div>
 
 	<tr>
 
 	</tr>
 	<td>
-		<div>
-			<form action="newaccount" method="post">
-				<Input Type="Submit" Value="회원가입" id="signupbutton1">
-			</form>
-		</div>
+
 	</td>
 	<td>
 		<div>

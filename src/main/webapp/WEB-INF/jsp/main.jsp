@@ -14,12 +14,15 @@
 
 <style>
     *{
-
+        margin: 0;
+        padding: 0;
     }
     .buttons1 {
         display: grid;
         /*grid-template-rows: repeat(3, 200px);*/
-        grid-template-columns: repeat(2, 200px);/*
+        /*grid-template-columns: repeat(3, 200px);*/
+        grid-template-columns: 200px 10px 200px;
+        /*
         position: fixed;
         top: 30%;
         left: 30%;*/
@@ -28,15 +31,18 @@
         height: 100%;
         /*text-align: center;*/
         padding: 100px;
-        justify-content: space-evenly;
+        justify-content: center;
         align-content: space-evenly;
-        margin: 20px 0 0 -120px;
+        margin: 0px 0 0 -120px;
         border: 1px solid black;
+        top: 0px;
     }
     .buttons2 {
         display: grid;
         /*grid-template-rows: repeat(3, 200px);*/
-        grid-template-columns: repeat(3, 200px);/*
+        /*grid-template-columns: repeat(3, 200px);*/
+        grid-template-columns: 200px 10px 200px 10px 200px;
+        /*
         position: fixed;
         top: 30%;
         left: 30%;*/
@@ -45,7 +51,7 @@
         height: 100%;
         /*text-align: center;*/
         padding: 100px;
-        justify-content: space-evenly;
+        justify-content: center;
         align-content: space-evenly;
         margin: 170px 0 0 -120px;
     }
@@ -69,8 +75,8 @@
         margin: 15% auto; /* 15% from the top and centered */
         padding: 20px;
         border: 1px solid #000000;
-        width: 25%; /* Could be more or less, depending on screen size */
-        height: 30%;
+        width: 500px; /* Could be more or less, depending on screen size */
+        height: 180px;
     }
     /* The Close Button */
     .close {
@@ -86,8 +92,8 @@
         cursor: pointer;
     }
     .buttonclass{
-        box-shadow:inset 0px 34px 0px -15px #b54b3a;
-        background-color:#a73f2d;
+        box-shadow:inset 0px 34px 0px -15px #3263d5;
+        background-color: #3045cd;
         border:1px solid #241d13;
         display:inline-block;
         cursor:pointer;
@@ -97,13 +103,13 @@
         font-weight:bold;
         padding:9px 23px;
         text-decoration:none;
-        text-shadow:0px -1px 0px #7a2a1d;
+        text-shadow:0px -1px 0px #121e50;
         width: 200px;
-        height: 100px;
+        height: 80px;
         /*margin: 20px;*/
     }
     .buttonclass:hover {
-        background-color:#b34332;
+        background-color: #17176c;
     }
     .buttonclass:active {
         position:relative;
@@ -142,11 +148,12 @@
 </style>
 
 <body>
-<div style="font-size: 50pt; text-align: center; left: 50%; margin: -12px 0 0 -180px; position: absolute">
+<div style="font-size: 50pt; text-align: center; left: 50%; margin: 0px 0 0 -180px; position: absolute">
     웹 화상채팅
 </div>
 <div id="buttons1" class="buttons1">
     <button type="button" OnClick="location.href ='createroom'" class="buttonclass">회의 방 생성</button>
+    <button style="width: 50px; height: 100px; border: none; background: white"></button>
     <button id="myBtn" class="buttonclass">회의 방 입장</button>
 
 </div>
@@ -157,9 +164,11 @@
     <form action="logout" method="post">
         <button type="button" OnClick="location.href ='logout'" id="but5" class="buttonclass">로그아웃</button>
     </form>
+    <button style="width: 50px; height: 100px; border: none; background: white"></button>
     <form action="editaccount" method="post">
         <Input Type="Submit" Value="정보수정" class="buttonclass">
     </form>
+    <button style="width: 50px; height: 100px; border: none; background: white"></button>
     <form action="delaccount" method="post">
         <Input Type="Submit" Value="계정삭제" class="buttonclass">
     </form>
@@ -170,18 +179,32 @@
             <!-- Modal content -->
             <div class="modal-content">
                 <span class="close">&times;</span>
-
+                <br>
                 <div class="inp_text">
                     <p>
-                        <label for="roomId" class="screen_out">방 번호</label>
-                        <input type="text" placeholder="방 번호" id="roomId" name="roomId">
+                        <label for="roomId" class="screen_out" style="size: 20px">방 번호</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" placeholder="방 번호" id="roomId" name="roomId" style="height: 20px; width: 300px">
                     </p>
                 </div>
+                <br>
                 <div class="inp_text">
                     <label for="roomPw" class="screen_out">방 비밀번호</label>
-                    <input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
+                    <input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw" style="height: 20px; width: 300px">
                 </div>
-                <button type="submit">회의 방 입장</button>
+                <br>
+                <button type="submit" style="box-shadow:inset 0px 34px 0px -15px #3263d5;
+        background-color: #3045cd;
+        border:1px solid #241d13;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:14px;
+        font-weight:bold;
+        text-decoration:none;
+        text-shadow:0px -1px 0px #121e50;
+        width: 120px;
+        height: 30px;">회의 방 입장</button>
 
             </div>
 

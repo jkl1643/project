@@ -1,6 +1,6 @@
 function screenShare() {
     navigator.mediaDevices.getUserMedia({
-        audio: false,
+        audio: true,
         video: true
     }).then(function (audioStream) {
         navigator.mediaDevices.getDisplayMedia({
