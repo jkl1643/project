@@ -46,95 +46,17 @@ left_cam.addEventListener("mouseup",
     }
 );
 
-/*selectVideo[1].addEventListener("mouseup",
-    function(b) {
-    console.log("aaaaaaaaa");
-    });*/
-    /*selectVideo[1].addEventListener("mouseup",
-        function (b) {
-            console.log("aaaaaaaaa");
-        });*/
-/*selectVideo[2].addEventListener("mouseup",
-    function(b) {
-        console.log("aaaaaaaaa");
-    });*/
-//try {
-    /*selectVideo.addEventListener("mouseup",
-        function (a) {
-            console.log("selectVideo_exist : " + selectVideo_exist);
-            if (selectVideo_status == 0) {
-                if (totalNum == 2) {
-                    selectVideo_status = 1;
-                    console.log("totalNum22 : " + totalNum);
-                    videoGrid.style.gridTemplateColumns = "80% 20%";
-                } else if (totalNum == 3) {
-                    selectVideo_status = 1;
-                    videoGrid.style.gridTemplateColumns = "70% 15% 15%";
-                }
-            } else if (selectVideo_status == 1) {
-                if (totalNum == 2) {
-                    selectVideo_status = 0;
-                    videoGrid.style.gridTemplateColumns = "50% 50%";
-                } else if (totalNum == 3) {
-                    selectVideo_status = 0;
-                    videoGrid.style.gridTemplateColumns = "33% 33% 33";
-                }
-            }
-        }
-    );*/
-//} catch (e) {
-    //console.log("에러");
-//}
-
-$(function(){
-    $('.left_cam').resizable({
-        minHeight : 50,
-        minWidth:70,
-        autoHide: true,
-        ghost : true
-    });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
 maindiv.addEventListener("mousemove",
     function (a) {
-        //menu.style.display = "inline";
         $('.menu').slideDown(200);
         $('.bottom').slideDown(200);
         mouseCoordinate(a);
-        /*menu.addEventListener("mouseover",
-            function () {
-                menu.style.display = "inline";
-            }
-        ) */
     }
 )
 
 var x1 = 0;
 var y1 = 0;
 function mouseCoordinate(e) {
-
-
-    /*maindiv.addEventListener("mouseover",
-        function () {
-            menu.style.display = "inline";
-            x1 = 3;
-            y1 = 3;
-        }
-    )*/
-
-
     menu.addEventListener("mouseover",
         function () {
             menu.style.display = "inline";
@@ -167,8 +89,6 @@ function mouseCoordinate(e) {
 
     x = e.clientX;
     y = e.clientY;
-
-
 
     setTimeout(function () {
         //var coor = "좌표 : ( " + x + ", " + y + ")" + ",( " + e.clientX + ", " + e.clientY + ")" + ",( " + x1 + ", " + y1 + ")";

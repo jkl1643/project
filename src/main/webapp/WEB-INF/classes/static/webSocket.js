@@ -33,7 +33,6 @@ function sendMessage(message) {
         }));
         document.getElementById("msg").value = "";
     }
-    //webSocket.send(JSON.stringify(message));
 }
 
 function onMessage(evt) {
@@ -49,32 +48,21 @@ function onMessage(evt) {
         var canvasNum = 0;
     }
 
-    /*console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
-    var totalNum = videoNum + canvasNum;
-    console.log("totalNum : " + totalNum);
-    document.documentElement.style.setProperty('--videoNum', videoNum);
-    document.documentElement.style.setProperty('--canvasNum', canvasNum);
-    document.documentElement.style.setProperty('--totalNum', totalNum);
-    console.log("totalNum2 : " + totalNum);*/
-
-    if (data === "got user media"/* && create != "create"*/) {
-        //console.log("got user media받음");
+    if (data === "got user media") {
         maybeStart();
     } else if (data.type === "got user media2") {
         console.log("screesstream : " + data.screenStream);
         maybeStart2(data.screenStream);
     } else if (data.type === "got user media3") {
         console.log("data.drawstream : " + data.drawStream);
-        maybeStart3(data.drawStream);
+        maybeStart3();
     } else if (data.type === "offer") {
-        //console.log("offer받음");
         if (!isInitiator && !isStarted) {
             maybeStart();
         }
         pc.setRemoteDescription(new RTCSessionDescription(data));
         doAnswer();
     } else if (data.type === "answer" && isStarted) {
-        //console.log("answer받음");
         pc.setRemoteDescription(new RTCSessionDescription(data));
     } else if (data.type === "candidate" && isStarted) {
         console.log("candidate받음 : " + data.value);
@@ -97,10 +85,7 @@ function onMessage(evt) {
     }
     if (data.type == "chat") { //채팅전송 받은거 처리
         if (data.roomID == roomid && data.roomPW == roompw) {
-            //console.log("data.roomID : " + data.roomID + ", roomid : " + roomid);
-            //console.log("data.roomPW : " + data.roomPW + ", roompw : " + roompw);
-            if (/*data.msg != null || data.msg != undefined || data.msg != "" || data.msg != '\n' || */data.msg != "undefined") {
-                //console.log("위 : " + data.msg);
+            if (data.msg != "undefined") {
                 chatroom.innerHTML = chatroom.innerHTML + "<br>" + data.userName + " : " + data.msg;
                 chatroom.scrollTop = chatroom.scrollHeight;
             } else {
@@ -110,17 +95,13 @@ function onMessage(evt) {
     }
     chatroom.scrollTop = chatroom.scrollHeight;
     voice.scrollTop = voice.scrollHeight;
-    if (create == "create"/* && data.userNickName == "[jkl1643@naver.com, jkl4976@naver.com]"*/) {
-        //console.log("create == true");
+    if (create == "create") {
         isInitiator = true;
         isChannelReady = true;
         $('#userlist').load("refreshuserlist");
     } else {
-        //console.log("create == else");
         isChannelReady = true;
         isInitiator = true;
-
-
         $('#userlist').load("refreshuserlist");
     }
 }
@@ -148,8 +129,6 @@ function testWebSocket() {
 function onOpen(evt) {
     webSocket.send(JSON.stringify({type: "join", userNickName: userNickName, roomID: roomid, roomPW: roompw}));
     $('#userlist').load("refreshuserlist");
-    //const video = document.createElement('video')
-    //addVideoStream(video);
     console.log("입장")
 
     var videoNum = $("video").length;
@@ -170,7 +149,6 @@ function onOpen(evt) {
 
 function onClose(evt) {
     window.location.href = 'home';
-    //webSocket.close();
     $('#userlist').load("refreshuserlist");
 }
 

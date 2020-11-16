@@ -4,7 +4,6 @@
 <%@ page import="org.springframework.context.ApplicationContext" %>
 <%@ page import="org.springframework.context.annotation.AnnotationConfigApplicationContext" %>
 <%@ page import="com.example.JavaConfig" %>
-<%@ page import="org.springframework.beans.factory.annotation.Autowired" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>

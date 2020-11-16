@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.example.Member" %>
-<%@ page import="org.springframework.context.annotation.AnnotationConfigApplicationContext" %>
-<%@ page import="com.example.JavaConfig" %>
-<%@ page import="org.springframework.context.ApplicationContext" %>
-<%@ page import="com.example.MemberDao" %>
 <!DOCTYPE html>
 <html>
 <head>

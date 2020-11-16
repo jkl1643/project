@@ -70,8 +70,6 @@ var canvas, ctx;
 let drawCanvasCheck = 0;
 function maybeStart3(drawStream) {
     console.log('>>>>>>> maybeStart2() ');
-    //console.log("maybestart중 isStarted : " + isStarted + ", localstream : " + localStream + ", iscannel : " + isChannelReady);
-    //if (!isStarted && isChannelReady) {
     console.log('>>>>>> creating peer connection2');
     createPeerConnection();
     pc.addStream(drawStream);
@@ -84,42 +82,10 @@ function maybeStart3(drawStream) {
 }
 
 function canvasShare() {
-    /*var video = document.createElement('video');
-    var canvasElt = document.createElement('canvas');
-    var drawStream = canvasElt.captureStream();
-    canvasElt.style.display = "inline";
-    console.log("drawstream" + drawStream);
-
-    navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: true
-    }).then (function (drawStream) {
-        console.log("dasf")
-        //screenStream.addTrack(audioStream.getAudioTracks());
-        //addVideo(screenStream)
-        addVideoStream(video);
-        video.srcObject = drawStream;
-
-        console.log('Adding local screenStream. -- 1');
-        //sendMessage('');
-        webSocket.send(JSON.stringify({type: "got user media3", drawStream: drawStream}));
-        if (isInitiator) {
-            maybeStart3(drawStream);
-        }
-        console.log("22")
-    });*/
-    /*var canvasElt = document.createElement('canvas');*/
-    /*canvasElt.style.display="inline";*/
-    /*addVideoStream(canvasElt);*/
     startDrawCanvas()
 }
 
 function startDrawCanvas() {
-
-
-
-
-    //---------------------------------------
     drawCanvasCheck = 1;
     canvas = document.getElementById("canvas");
     /*canvas.style.display="inline";*/
@@ -137,21 +103,10 @@ function startDrawCanvas() {
         var canvasNum = 0;
     }
 
-    /*console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
-    totalNum = 100 / (videoNum + canvasNum);
-    console.log("totalNum : " + totalNum);
-    document.documentElement.style.setProperty('--videoNum', videoNum + '%');
-    document.documentElement.style.setProperty('--canvasNum', canvasNum);
-    document.documentElement.style.setProperty('--totalNum', totalNum + "%");
-    console.log("totalNum2 : " + totalNum);*/
-    //---------------------------------------
-
     var video = document.createElement('video');
     var canvasElt = document.querySelector('canvas');
     var drawStream = canvasElt.captureStream(25);
     console.log("drawstream" + drawStream);
-
-
 
     video.srcObject = drawStream;
 
@@ -181,12 +136,6 @@ function startDrawCanvas() {
         /*webSocket.send(JSON.stringify({type: "got user media3", drawStream: canvasstream}));*/
         console.log("5");
     }
-     /*
-        if (isInitiator) {
-            maybeStart3(localMediaStream);
-        }
-    });*/
-
 }
 
 function listener(event){

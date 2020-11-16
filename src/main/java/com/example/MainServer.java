@@ -40,14 +40,7 @@ public class MainServer {
         if(roomid.equals("lobby")) {
             User_list.remove(User_nick.get(nick));
             User_nick.remove(nick);
-
-            //Chat_Message d = new Chat_Message();
-
-            //d.setType("disconnected");
-            //d.setMessage(nick + "님이 퇴장하셨습니다.");
             String js = "";
-
-            //js = objectMapper.writeValueAsString(d);
 
             for (User user : User_list.values()) {
                 WebSocketSession wss = user.getWss();
@@ -72,10 +65,8 @@ public class MainServer {
     public Room create() {
         Room room = new Room();
         Room_list.put(room.getID(), room);
+        Room_list.put(room.getPassword(), room);
 
-        //Chat_Message d = new Chat_Message();
-
-        //d.setType("create");
         String js = "";
 
         try {

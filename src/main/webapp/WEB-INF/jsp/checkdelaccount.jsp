@@ -13,7 +13,6 @@
 </form>
 <%MainController.delaccount = 0;
 session.invalidate();
-
 %>
 </body>
 </html>

@@ -7,12 +7,7 @@ function screenShare() {
             audio: true,
             video: true
         }).then(function (screenStream) {
-            console.log("dasf")
-            //screenStream.addTrack(audioStream.getAudioTracks());
-
             const video = document.createElement('video')
-
-            //addVideo(screenStream)
             addVideoStream(video);
             video.srcObject = screenStream;
             console.log("screesstream : " + screenStream);
@@ -22,15 +17,12 @@ function screenShare() {
             if (isInitiator) {
                 maybeStart2(screenStream);
             }
-            console.log("22")
         })
     })
 }
 
 function maybeStart2(screenStream) {
     console.log('>>>>>>> maybeStart2() ');
-    //console.log("maybestart중 isStarted : " + isStarted + ", localstream : " + localStream + ", iscannel : " + isChannelReady);
-    //if (!isStarted && isChannelReady) {
     console.log('>>>>>> creating peer connection2');
     createPeerConnection();
     pc.addStream(screenStream);
@@ -39,7 +31,6 @@ function maybeStart2(screenStream) {
     if (isInitiator) {
         doCall();
     }
-    //}
 }
 
 function addVideo(screenStream) {

@@ -1,21 +1,7 @@
 function addVideoStream(video) {
-    /*$( document ).ready(function() {
-        console.log("fffffffff")
-        $('.video-grid').append('<div id="videoClass" class="videoClass"></div>');
-        console.log("fffffffff")
-    });
-    var videoClass = document.getElementById('videoClass')*/
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
-    /*$(document).ready(function () {
-        $('.videoClass').resizable();
-        $('video').resizable();
-        /!*selectVideo[1].addEventListener("mouseup",
-            function(b) {
-                console.log("aaaaaaaaa");
-            });*!/
-    });*/
     videoGrid.append(video)
     video.setAttribute("class", "videoClass" + videoCount);
     videoCount = videoCount + 1;
@@ -60,7 +46,6 @@ function addVideoStream(video) {
             }
         });
     var videoNum = $("video").length;
-    //var totalNum = 0;
     console.log("비디오개수 : " + videoNum + "캔버스 개수 : " + canvasNum + "합 : " + (videoNum + canvasNum));
     totalNum = videoNum + canvasNum;
     console.log("totalNum : " + totalNum);
@@ -73,7 +58,6 @@ function addVideoStream(video) {
 
 }
 
-//function invite() {
 navigator.mediaDevices.getUserMedia({
     audio: false,
     video: true
@@ -82,8 +66,6 @@ navigator.mediaDevices.getUserMedia({
     .catch(function (e) {
         alert('getUserMedia() error: ' + e.name);
     });
-
-//}
 
 function gotStream(stream) {
     console.log('Adding local stream. -- 11');
@@ -134,11 +116,8 @@ window.onbeforeunload = function () {
 function createPeerConnection() {
     try {
         pc = new RTCPeerConnection(pcConfig);
-        console.log("1")
         pc.onicecandidate = handleIceCandidate;
-        console.log("2")
         pc.onaddstream = handleRemoteStreamAdded;
-        console.log("3")
         pc.onremovestream = handleRemoteStreamRemoved;
         console.log('Created RTCPeerConnnection');
     } catch (e) {
@@ -186,11 +165,7 @@ function doAnswer() {
 function setLocalAndSendMessage(sessionDescription) {
     pc.setLocalDescription(sessionDescription);
     console.log('setLocalAndSendMessage sending message', sessionDescription);
-    //if(answercount == 0) {
-    //console.log("answercount : " + answercount);
     sendMessage(sessionDescription);
-    //answercount = 1;
-    //}
 }
 
 function onCreateSessionDescriptionError(error) {
@@ -209,26 +184,10 @@ function requestTurn(turnURL) {
 
 function handleRemoteStreamAdded(event) {
     console.log("remotestream")
-    //console.log('Remote stream added. : ' + event + ", event.stream : " + event.stream);
-    //remoteStream = event.stream;
     var video = document.createElement('video')
     addVideoStream(video);
     var remoteStream = event.stream;
-    //remoteStream2[camCount] = event.stream;
-    //console.log(event);
     video.srcObject = remoteStream;
-    //remoteVideo.srcObject = remoteStream;
-    /*for (var j = 0; j < size; j++) {
-        remoteVideo[j].srcObject = remoteStream;
-    }*/
-    //remoteVideo.srcObject = remoteStream;
-    /*if (create == "create") {
-        remoteVideo[size].srcObject = remoteStream;
-    } else {
-        for (var j = 0; j < size; j++) {
-            remoteVideo[size].srcObject = remoteStream
-        }
-    }*/
     console.log("remotestream2")
     camCount++;
 }
@@ -236,8 +195,6 @@ function handleRemoteStreamAdded(event) {
 function handleRemoteStreamRemoved(event) {
     console.log('Remote stream removed. Event: ', event);
     var video = document.getElementById("video");
-    /*video.remove();*/
-    /*$('video').remove();*/
 }
 
 function hangup() {
@@ -256,7 +213,6 @@ function handleRemoteHangup() {
 function stop() {
     isStarted = false;
     var video = document.getElementById("video");
-    /*video.remove();*/
     $('video:last').remove();
     var videoNum = $("video").length;
     if (drawCanvasCheck === 1) {

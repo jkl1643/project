@@ -1,8 +1,5 @@
 package com.example;
 
-//import com.sun.org.apache.xpath.internal.operations.Mod;
-
-import org.python.util.PythonInterpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -30,7 +27,6 @@ public class MainController {
     public static int state = 1;
     public static Hashtable loginUsers = new Hashtable();
     public static MainServer server;
-    private static PythonInterpreter interpreter;
 
     @Autowired
     private HashMap<Integer, MainServer> serverList;
@@ -162,12 +158,6 @@ public class MainController {
         mav.addObject("chkpwd", false);
         mav.addObject("currentpwd", false);
 
-
-        /*interpreter = new PythonInterpreter();
-        interpreter.exec("from java.lang import System");
-        interpreter.exec("System.out.println('hi')");
-        interpreter.execfile("C:/Users/Yu/Desktop/cam.py");*/
-
         if(login == 0) {
             mav.addObject("login", 0);
         } else {
@@ -259,8 +249,6 @@ public class MainController {
         Member name2 = (Member)session.getAttribute("mem");
         Member member = memberDao.selectByEmail(id);
         MemberLogin lgn = ctx.getBean("lgn", MemberLogin.class);
-
-
 
         if(name2 == null){
             Enumeration en = loginUsers.keys();
@@ -359,9 +347,6 @@ public class MainController {
             mav.setViewName("main");
 
         }
-        //mav.setViewName("home");
-
-
         return mav;
     }
 
@@ -473,12 +458,6 @@ public class MainController {
         ModelAndView mav = new ModelAndView();
         System.out.println("------------createroom------------");
         Member mem = (Member) session.getAttribute("mem");
-
-        /*serverList.put(mem.getId().intValue(), new MainServer());*/
-        //serverList.put(1, new MainServer());
-
-        /*MainServer server = serverList.get(mem.getId().intValue());*/
-        //MainServer server = serverList.get(1);
         Room room2 = (Room) session.getAttribute("room");
         if((Member)session.getAttribute("mem") == null) {
             response.setContentType("text/html; charset=UTF-8");
@@ -488,7 +467,6 @@ public class MainController {
             return mav;
         }
         if(room2 == null){ //여기 세션에서 방이 만들어지지않았을때
-            //serverList.put(1, new MainServer());
             serverList.put(16, new MainServer());
             System.out.println("서버리스트밸류 : " + serverList.values());
             MainServer server = serverList.get(16);
@@ -548,28 +526,35 @@ public class MainController {
 
         }
         server = serverList.get(16);
-        //MainServer server =
-        //MainServer server = serverList.get(mem.getId().intValue()); //서버번호를 서버 고유아이디로해야할듯
-        //MainServer server = serverList.get(mem.getId().intValue());
         System.out.println("room : " + room);
         if(room == null) { //이 세션에서 방만들어진적없을때 방입장으로 들어갔을때
-            /*System.out.println("getRoom_list : " + server.getRoom_list() + ", 아이디 : " + server.getRoom_list().get(ID) + ", ID : " + ID);*/
-            if (ID.equals(server.getRoom_list().get(ID).getID())) {
-                System.out.println("방번호같음 : ");
-                session.setAttribute("roomid", ID);
-                session.setAttribute("roompw", PW);
-                if(name == null) {
-                    name = mem.getNickname();
+
+            try {
+                System.out.println("getRoom_list : " + server.getRoom_list() + ", 아이디 : " + server.getRoom_list().get(ID).getID() + ", ID : " + ID);
+                System.out.println("getRoom_list : " + server.getRoom_list() + ", 비번 : " + server.getRoom_list().get(PW).getPassword() + ", 비번 : " + PW);
+                if (ID.equals(server.getRoom_list().get(ID).getID()) && PW.equals(server.getRoom_list().get(PW).getPassword())) {
+                    System.out.println("방번호같음 : ");
+                    session.setAttribute("roomid", ID);
+                    session.setAttribute("roompw", PW);
+                    if (name == null) {
+                        name = mem.getNickname();
+                    }
+                    server.select(ID, PW, name);
+                    //model.addAttribute("roominfo", room.getUserCam());
+                    model.addAttribute("User_list", server.getUser_nick().keySet());
+                    model.addAttribute("User_number", server.getUser_list().size());
+                    //model.addAttribute("roomUserName", room);
+                    System.out.println("id2 : " + ID + ", pw2 : " + PW);
+                    mav.setViewName("joinroom");
+                    return mav;
+                } else {
+                    response.setContentType("text/html; charset=UTF-8");
+                    PrintWriter out = response.getWriter();
+                    out.println("<script>alert('해당하는 방이 없습니다.'); location.href='home';</script>");
+                    out.flush();
+                    return mav;
                 }
-                server.select(ID, PW, name);
-                //model.addAttribute("roominfo", room.getUserCam());
-                model.addAttribute("User_list", server.getUser_nick().keySet());
-                model.addAttribute("User_number", server.getUser_list().size());
-                //model.addAttribute("roomUserName", room);
-                System.out.println("id2 : " + ID + ", pw2 : " + PW);
-                mav.setViewName("c");
-                return mav;
-            } else {
+            } catch (Exception e){
                 response.setContentType("text/html; charset=UTF-8");
                 PrintWriter out = response.getWriter();
                 out.println("<script>alert('해당하는 방이 없습니다.'); location.href='home';</script>");
@@ -583,64 +568,20 @@ public class MainController {
             model.addAttribute("roominfo", room.getUserCam());
             model.addAttribute("User_list", server.getUser_nick().keySet());
             model.addAttribute("User_number", server.getUser_list().size());
-            mav.setViewName("c");
+            mav.setViewName("joinroom");
             System.out.println("id3 : " + room.getID() + ", pw3 : " + room.getPassword());
             return mav;
         }
-        /*System.out.println("ID : " + ID + ", PW : " + PW);*/
-
-        /*if(name == null)
-            name = mem.getNickname();
-        server.select(ID, PW, name); //방생성한 번호 비번으로 만들기랑 방번호 방비번 입력해서 하는걸로 조건
-
-        System.out.println("만든사람2 방번호 : " + ID + ", 비밀번호 : " + PW + ", name : " + name);
-        model.addAttribute("User_list", server.getUser_nick().keySet());
-        System.out.println("유저ㅓㅓ");
-        Set<String> keys2 = server.getUser_nick().keySet();
-        for (String key : keys2) {
-            System.out.println("유저444 : " + key);
-        }
-        mav.setViewName("createroom");*/
-
-
-        /*return mav;*/
     }
     @GetMapping("/refreshuserlist")
     public ModelAndView RefreshUserlist(Model model, HttpSession session) {
         ModelAndView mav = new ModelAndView();
         Member mem = (Member) session.getAttribute("mem");
         Room room = (Room) session.getAttribute("room");
-        //String roomid = (String)
-        //MainServer Server = serverList.get(mem.getId().intValue());
         MainServer Server = serverList.get(16);
-        /*try {
-            for (Integer key : serverList.keySet()) {
-                server = serverList.get(key);
-                System.out.println("리스트 : " + key + String.valueOf(key));
-                System.out.println("리스트2 : " + server.getRoom_list());
-                //key랑 비교해야지
-                System.out.println("server.getRoom_list().get(key.toString()).getID() : " + server.getRoom_list().get(room.getID()).getID() + ", ID : " + room.getID());
-                if (server.getRoom_list().get(room.getID()).getID().equals(room.getID())) {
-                    break;
-                } else {
-                }
-            }
-        } catch (Exception e){
-
-        }*/
-
         model.addAttribute("User_list", Server.getUser_nick().keySet());
         model.addAttribute("User_number", server.getUser_list().size());
-        mav.setViewName("Game_userlist"); // room 만든후 .
+        mav.setViewName("roomuserlist"); // room 만든후 .
         return mav;
     }
-
-    @GetMapping("/cam")
-    public ModelAndView cam(Model model){
-        ModelAndView mav = new ModelAndView();
-
-        mav.setViewName("camtest");
-        return mav;
-    }
-
 }

@@ -5,31 +5,22 @@ const recognition = new SpeechRecognition();
 
 // true면 음절을 연속적으로 인식하나 false면 한 음절만 기록함
 recognition.interimResults = true;
-// 값이 없으면 HTML의 <html lang="en">을 참고합니다. ko-KR, en-US
 recognition.lang = "ko-KR";
-// true means continuous, and false means not continuous (single result each time.)
-// true면 음성 인식이 안 끝나고 계속 됩니다.
 recognition.continuous = true;
-// 숫자가 작을수록 발음대로 적고, 크면 문장의 적합도에 따라 알맞은 단어로 대체합니다.
+
 // maxAlternatives가 크면 이상한 단어도 문장에 적합하게 알아서 수정합니다.
 recognition.maxAlternatives = 100;
-
-/*let p = document.createElement("p");
-p.classList.add("para");
-
-let words = document.querySelector(".words");
-words.appendChild(p);*/
 
 var voice = document.getElementById('voice');
 let speechToText = "";
 recognition.addEventListener("result", (e) => {
     let today = new Date();
-    let year = today.getFullYear(); // 년도
-    let month = today.getMonth() + 1;  // 월
-    let date = today.getDate();  // 날짜
-    let hours = today.getHours(); // 시
-    let minutes = today.getMinutes();  // 분
-    let seconds = today.getSeconds();  // 초
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+    let seconds = today.getSeconds();
     var time = '[' + year + '/' + month + '/' + date + ' '+ hours + ':' + minutes + ':' + seconds + ']';
     let interimTranscript = "";
     for (let i = e.resultIndex, len = e.results.length; i < len; i++) {
@@ -41,8 +32,6 @@ recognition.addEventListener("result", (e) => {
             interimTranscript += transcript;
         }
     }
-    /*document.getElementById("voice").innerHTML = (speechToText + interimTranscript + time + "<br>");
-    document.getElementById("voice").scrollTop = document.getElementById("voice").scrollHeight;*/
     if (speechToText != "")
         voice.innerHTML = voice.innerHTML + "<br>" + (time + ' : ' + speechToText);
     speechToText = "";
@@ -51,8 +40,7 @@ recognition.addEventListener("result", (e) => {
     });
 
 
-// 음성인식이 끝나면 자동으로 재시작합니다.
+// 음성인식이 끝나면 자동으로 재시작
 recognition.addEventListener("end", recognition.start);
 
-// 음성 인식 시작
 recognition.start();
