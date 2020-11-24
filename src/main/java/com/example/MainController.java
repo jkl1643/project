@@ -120,7 +120,7 @@ public class MainController {
         } catch (Exception e){
 
         }
-        mav.setViewName("home");
+        mav.setViewName("realhome");
         return mav;
     }
 
@@ -581,7 +581,228 @@ public class MainController {
         MainServer Server = serverList.get(16);
         model.addAttribute("User_list", Server.getUser_nick().keySet());
         model.addAttribute("User_number", server.getUser_list().size());
-        mav.setViewName("roomuserlist"); // room 만든후 .
+        mav.setViewName("roomuserlist");
+        return mav;
+    }
+
+    @GetMapping("/realhome")
+    public ModelAndView realhome(ModelAndView mav, HttpSession session, Model model, HttpServletResponse response,
+                                 @RequestParam(value = "EMAIL2", required = false, defaultValue = "0") String id,
+                                 @RequestParam(value = "PWD2", required = false) String pwd,
+                                 @RequestParam(value = "PWD22", required = false) String pwd2,
+                                 @RequestParam(value = "NICKNAME2", required = false) String nickname) throws IOException  {
+
+        System.out.println("--------홈------------");
+        mav.addObject("users", loginUsers.size());
+        try {
+            Member mem = (Member)session.getAttribute("mem");
+            if(mem != null){
+                mav.setViewName("main");
+                return mav;
+            }
+            login = 0;
+        } catch (Exception e) {
+            login = 1;
+        }
+
+
+        mav.addObject("unknown_email", false);
+        mav.addObject("email_pwd_match", false);
+        mav.addObject("email_pwd_match2", false);
+        mav.addObject("logout", false);
+        mav.addObject("delaccount", false);
+        mav.addObject("wrongemail", false);
+        mav.addObject("created_account", false);
+        mav.addObject("error", false);
+        mav.addObject("id", id);
+        mav.addObject("loginduplicate", false);
+        mav.addObject("editaccount", false);
+        mav.addObject("chkpwd", false);
+        mav.addObject("currentpwd", false);
+
+        if(login == 0) {
+            mav.addObject("login", 0);
+        } else {
+            mav.addObject("login", 1);
+        }
+        System.out.println("login = " + login);
+        System.out.println("delaccount = " + delaccount);
+
+        RegisterRequest req = new RegisterRequest();
+
+        if (login != 1 && delaccount != 1) {
+            req.setEmail(id);
+            req.setNickname(nickname);
+            req.setPassword(pwd);
+            req.setConfirmPassword(pwd2);
+        }
+
+        if (!id.equals("0")) { //회원가입 아아디에 값을 입력했을때
+            if (!req.isPasswordEqualToConfirmPassword()) {
+                mav.setViewName("realhome");
+                mav.addObject("email_pwd_match", true);
+                System.out.println("암호와 확인이 일치하지 않습니다.\n");
+                return mav;
+            }
+            //회원가입 정보들을 입력하지 않앗을때
+            if (id.isEmpty() || pwd.isEmpty() || pwd2.isEmpty() || nickname.isEmpty()) {
+                mav.addObject("error", true);
+                mav.setViewName("realhome");
+                return mav;
+            }
+
+            try {
+                MemberRegisterService memberRegSvc = ctx.getBean("memberRegSvc", MemberRegisterService.class);
+                memberRegSvc.regist(req); //회원가입
+                Member member2 = memberDao.selectByEmail(id);
+                mav.addObject("created_account", true);
+            } catch (DuplicateMemberException e) {
+                mav.addObject("error", true);
+                System.out.println("이미 존재하는 이메일입니다.\n");
+            } catch (Exception e) {
+                mav.addObject("error", true);
+            }
+            MemberLogin.loginEmail = id;
+            System.out.println("계정생성 = " + id);
+            id = "0";
+            req.setEmail("0");
+            mav.setViewName("realhome");
+            return mav;
+        } else {
+            mav.setViewName("realhome");
+        }
+        id = "0";
+        return mav;
+    }
+
+    @RequestMapping("/realmain")
+    public ModelAndView realmain(Model model,
+                             @RequestParam(value = "loginId", required = false) String id,
+                             @RequestParam(value = "loginPw", required = false) String pwd,
+                             HttpServletResponse response, String saveId,
+                             String oldpwd, String pwd2, String nickname, HttpSession session) throws IOException {
+        System.out.println("-------------메인 ----------------");
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("unknown_email", false);
+        mav.addObject("email_pwd_match", false);
+        mav.addObject("email_pwd_match2", false);
+        mav.addObject("logout", false);
+        mav.addObject("delaccount", false);
+        mav.addObject("wrongemail", false);
+        mav.addObject("select_date", false);
+        mav.addObject("insert_memo", false);
+        mav.addObject("created_account", false);
+        mav.addObject("delmemo", false);
+        mav.addObject("currentpwd", false);
+        mav.addObject("editaccount", false);
+        mav.addObject("chkpwd", false);
+        mav.addObject("created_memo", false);
+        mav.addObject("error", false);
+        mav.addObject("login", 0);
+        mav.addObject("loginduplicate", false);
+        mav.addObject("users", loginUsers.size());
+
+        Member name2 = (Member)session.getAttribute("mem");
+        Member member = memberDao.selectByEmail(id);
+        MemberLogin lgn = ctx.getBean("lgn", MemberLogin.class);
+
+        if(name2 == null){
+            Enumeration en = loginUsers.keys();
+            while (en.hasMoreElements()) {
+                String key = en.nextElement().toString();
+                System.out.println(key + " : " + loginUsers.get(key));
+                if (key == null)
+                    break;
+                if (key.equals(member.getEmail())) {
+                    try {
+                        lgn.login(id, pwd);
+                        loginUsers.put(id, id);
+                        session.setAttribute("mem", member);
+                    } catch (Exception e){
+                        System.out.println("에러");
+                    }
+                }
+            }
+        }
+
+
+        session.setAttribute("idid", id);
+        delaccount = 0;
+        model.addAttribute("userid", id);
+
+        System.out.println("delaccount = " + delaccount);
+        System.out.println("delmemo = " + delmemo);
+        System.out.println("editaccount = " + editaccount);
+
+        if(login == 1) {
+            mav.addObject("id2", id);
+        }
+
+        name2 = (Member)session.getAttribute("mem");
+        String idid = (String) session.getAttribute("idid");
+        if (name2 == null) { //이전에 로그인 한적이 없을때
+            Member name = (Member) session.getAttribute("mem");
+            System.out.println("name = " + name);
+
+            Enumeration en = loginUsers.keys();
+            while (en.hasMoreElements()) {
+                String key = en.nextElement().toString();
+                System.out.println(key + " : " + loginUsers.get(key));
+                if (key.equals(member.getEmail())) {
+                    mav.addObject("loginduplicate", true);
+                    mav.setViewName("realhome");
+                    return mav;
+                }
+            }
+
+            System.out.println("해쉬테이블 인원 : " + String.valueOf(loginUsers.size()));
+            mav.addObject("users", loginUsers.size());
+
+            try {
+                lgn.login(id, pwd); //로그인
+                loginUsers.put(id, id);
+                session.setAttribute("mem", member);
+                if((Member)session.getAttribute("mem") == null) {
+                    response.setContentType("text/html; charset=UTF-8");
+                    PrintWriter out = response.getWriter();
+                    out.println("<script>alert('로그인이 필요합니다.'); location.href='realhome';</script>");
+                    out.flush();
+                    return mav;
+                }
+                //session.setMaxInactiveInterval(10);
+                mav.addObject("login", 1);
+                System.out.println("id = " + id + ", pwd = " + pwd);
+                userid2 = MemberLogin.loginEmail;
+                userNickname = nickname;
+                model.addAttribute("userid", userid2);
+                login = 1; //로그인을했을때
+                if (saveId != null) {
+                    System.out.println("쿠키저장");
+                    Cookie cookie = new Cookie("saveId", id);
+                    response.addCookie(cookie);
+                }
+                mav.setViewName("realmain");
+            } catch (MemberNotFoundException e) {
+                System.out.println("존재하지 않는 이메일입니다.2\n");
+                mav.addObject("unknown_email", true);
+                id = "0";
+                mav.setViewName("realhome");
+            } catch (WrongIdPasswordException e) {
+                System.out.println("이메일과 암호가 일치하지 않습니다.\n");
+                mav.addObject("email_pwd_match", true);
+                id = "0";
+                mav.setViewName("realhome");
+            } catch (IOException e) {
+                id = "0";
+                mav.setViewName("realhome");
+            } catch (NullPointerException e) {
+                id = "0";
+                mav.setViewName("realhome");
+            }
+        } else {
+            mav.setViewName("realmain");
+
+        }
         return mav;
     }
 }

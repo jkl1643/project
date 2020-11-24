@@ -7,6 +7,11 @@
 </head>
 
 <style>
+	* {
+		/*margin: 0;
+		padding: 0;*/
+		background: white;
+	}
 	a {
 		color: #333;
 		text-decoration: none;
@@ -36,9 +41,9 @@
 	}
 	.inner_login {
 		position: absolute;
-		left: 50%;
+		/*left: 50%;*/
 		top: 50%;
-		margin: -145px 0 0 -160px;
+		margin: -145px 0 0 12px;
 	}
 	.login{
 		position: relative;
@@ -70,7 +75,7 @@
 	}
 	.login .inp_text {
 		position: relative;
-		width: 100%;
+		width: 91%;
 		margin: 10px;
 		padding: 18px 19px 19px;
 		box-sizing: border-box;
@@ -106,13 +111,15 @@
 		display: inline-block;
 		position: relative;
 		margin-bottom: -1px;
+		left: 1%;
 	}
 	.login_append .inp_chk {
 		float: left;
 	}
 	.inp_chk .saveId {
 		position: absolute;
-		z-index: -1;
+
+		z-index: 30;
 		top: 0;
 		left: 0;
 		width: 18px;
@@ -180,8 +187,13 @@
 
 
 </style>
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@900&display=swap');
+</style>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@900&display=swap" rel="stylesheet">
 
-<body>
+<body style="color: white">
 <%
 	Cookie [] cookie = request.getCookies();
 	String cookieId = "";
@@ -194,33 +206,14 @@
 	}
 	System.out.println("cookie : " + cookieId);
 %>
-<div style="font-size: 50pt; text-align: center; top: 10%; left: 50%; margin: -12px 0 0 -180px; position: absolute">
+
+<div style="font-size: 37pt; text-align: center; top: 17%; /*margin: -12px 0 0 -180px;*/ color: #0021c1; font-family: 'Gothic A1', sans-serif; position: absolute; z-index: 5; left: 73.5%;">
 	웹 화상채팅
 </div>
-<form action="joinroom" method="post">
-	<div id="myModal" class="modal">
-		<div class="modal-content">
-			<span class="close">&times;</span>
 
-			<div class="inp_text">
-				<p>
-					<label for="roomId" class="screen_out">방 번호</label>
-					<input type="text" placeholder="방 번호" id="roomId" name="roomId">
-				</p>
-			</div>
-			<div class="inp_text">
-				<label for="roomPw" class="screen_out">방 비밀번호</label>
-				<input type="password" placeholder="방 비밀번호" id="roomPw" name="roomPw">
-			</div>
-			<button type="submit">회의 방 입장</button>
-		</div>
-	</div>
-</form>
-
-
-<div class="inner_login">
+<div class="inner_login" style="color: white">
 	<div class="login">
-		<form action="main" method="post" id="authForm">
+		<form action="realmain" method="post" id="authForm">
 			<fieldset>
 				<legend class="screen_out">로그인 정보 입력폼</legend>
 				<div class="box_login">
